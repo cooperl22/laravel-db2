@@ -446,7 +446,8 @@ class DB2Grammar extends Grammar {
      */
     protected function typeText(Fluent $column)
     {
-        return 'text';
+        $colLength = ($column->length ? $column->length : 16369);
+        return "varchar($colLength)";
     }
 
     /**
@@ -457,7 +458,8 @@ class DB2Grammar extends Grammar {
      */
     protected function typeMediumText(Fluent $column)
     {
-        return 'mediumtext';
+        $colLength = ($column->length ? $column->length : 16369);
+        return "varchar($colLength)";
     }
 
     /**
@@ -468,7 +470,8 @@ class DB2Grammar extends Grammar {
      */
     protected function typeLongText(Fluent $column)
     {
-        return 'longtext';
+        $colLength = ($column->length ? $column->length : 16369);
+        return "varchar($colLength)";
     }
 
     /**
