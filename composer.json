@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Michaelbonds\\Database\\DB2\\": "src/"
+            "MichaelB\\Database\\DB2\\": "src/"
         }
     }
 }
