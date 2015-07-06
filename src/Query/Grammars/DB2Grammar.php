@@ -79,7 +79,7 @@ class DB2Grammar extends Grammar
 
         $columns = (!empty($components['columns']) ? $components['columns'] . ', ': 'select');
 
-        $components['columns'] = $this->compileOver($orderings, $columns);
+        $components['columns'] = $this->compileOver($orderings);
 
         unset($components['orders']);
 
@@ -104,9 +104,9 @@ class DB2Grammar extends Grammar
      * @param  string  $orderings
      * @return string
      */
-    protected function compileOver($orderings, $columns)
+    protected function compileOver($orderings)
     {
-        return "{$columns} row_number() over ({$orderings}) as row_num";
+        return "select row_number() over ({$orderings}) as row_num";
     }
 
     protected function compileRowConstraint($query)
