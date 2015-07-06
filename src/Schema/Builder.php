@@ -1,5 +1,5 @@
 <?php
-namespace Cooperl\Database\DB2\Schema;
+namespace MichaelB\Database\DB2\Schema;
 
 use Closure;
 use Illuminate\Database\Schema\Blueprint;

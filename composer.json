@@ -1,5 +1,5 @@
 {
-    "name": "cooperl/laravel-db2",
+    "name": "michaelb/laravel-db2",
     "description": "laravel-db2 is a simple DB2 service provider for Laravel. It provides DB2 Connection by extending the Illuminate Database component of the laravel framework.",
     "keywords": ["laravel", "DB2", "Database", "PDO", "ODBC"],
     "license": "MIT",
@@ -7,6 +7,10 @@
         {
             "name": "Maxime Rault",
             "role": "Developer"
+        },
+        {
+            "name": "Michael Bonds",
+            "role": "Developer/Contributor"
         }
     ],
     "require": {
@@ -18,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Cooperl\\Database\\DB2\\": "src/"
+            "Michaelbonds\\Database\\DB2\\": "src/"
         }
     }
 }
