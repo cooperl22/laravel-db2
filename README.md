@@ -23,7 +23,7 @@ Add laravel-db2 to your composer.json file:
 
 ```
 "require": {
-    "cooperl/laravel-db2": "~2.0"
+    "michaelb/laravel-db2": "~1.0"
 }
 ```
 
@@ -124,6 +124,51 @@ Simply add this code at the end of your ``app/config/database.php`` file:
         'trace'                => 0,
         'traceFilename'        => '',
         'extendedColInfo'      => 0,
+    'odbc' => [
+        'driver'         => 'odbc',
+        'host'           => '',
+        'database'       => '',
+        'username'       => '',
+        'password'       => '',
+        'charset'        => 'utf8',
+        'ccsid'          => 1208,
+        'prefix'         => '',
+        'schema'         => '',
+        'i5_libl'        => '',
+        'i5_lib'         => '',
+        'i5_commit'      => 0,
+        'i5_naming'      => 0,
+        'i5_date_fmt'    => 5,
+        'i5_date_sep'    => 0,
+        'i5_decimal_sep' => 0,
+        'i5_time_fmt'    => 0,
+        'i5_time_sep'    => 0,
+        'options'  => [
+            PDO::ATTR_CASE => PDO::CASE_LOWER,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_PERSISTENT => false
+            ]
+    ],
+
+    'ibm' => [
+        'driver'         => 'ibm',
+        'host'           => '',
+        'database'       => '',
+        'username'       => '',
+        'password'       => '',
+        'charset'        => 'utf8',
+        'ccsid'          => 1208,
+        'prefix'         => '',
+        'schema'         => '',
+        'i5_libl'        => '',
+        'i5_lib'         => '',
+        'i5_commit'      => 0,
+        'i5_naming'      => 0,
+        'i5_date_fmt'    => 5,
+        'i5_date_sep'    => 0,
+        'i5_decimal_sep' => 0,
+        'i5_time_fmt'    => 0,
+        'i5_time_sep'    => 0,
         'options'  => [
             PDO::ATTR_CASE => PDO::CASE_LOWER,
             PDO::ATTR_EMULATE_PREPARES => false,
