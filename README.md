@@ -37,7 +37,7 @@ Add the laravel-db2 Service Provider to your config in ``app/config/app.php``:
 
 ```php
 'providers' => [
-    'Cooperl\Database\DB2\DB2ServiceProvider'
+    'MichaelB\Database\DB2\DB2ServiceProvider'
 ],
 ```
 
@@ -142,7 +142,7 @@ Run on the command line from the root of your project:
 $ php artisan config:publish cooperl/laravel-db2
 ```
 
-Set your laravel-db2 credentials in ``app/config/packages/cooperl/laravel-db2/config.php``
+Set your laravel-db2 credentials in ``app/config/packages/michaelb/laravel-db2/config.php``
 the same way as above
 
 
