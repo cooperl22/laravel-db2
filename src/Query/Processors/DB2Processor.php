@@ -8,6 +8,29 @@ use Cooperl\Database\DB2\Query\Grammars\DB2Grammar;
 class DB2Processor extends Processor {
 
     /**
+     * Process the results of a "select" query.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  array  $results
+     * @return array
+     */
+    /*public function processSelect(Builder $query, $results)
+    {
+        $results = array_map(function($result) {
+            foreach (get_object_vars($result) as $field => $value) {
+                if (is_string($value))
+                {
+                    $result->$field = trim(preg_split('/[^\r\n\t\x20-\x7E\xA0-\xFF]/', $value)[0]);
+                }
+            }
+
+            return $result;
+        }, $results);
+
+        return $results;
+    }*/
+
+    /**
      * Process an "insert get ID" query.
      *
      * @param  \Illuminate\Database\Query\Builder  $query

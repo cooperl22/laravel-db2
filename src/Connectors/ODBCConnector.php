@@ -28,17 +28,70 @@ class ODBCConnector extends Connector implements ConnectorInterface
     protected function getDsn(array $config) {
         extract($config);
 
-        $dsn = "odbc:DRIVER={iSeries Access ODBC Driver};"
-             . "SYSTEM=$database;"
-             . "NAM=$i5_naming;"
-             . "DATABASE=$i5_lib;"
-             . "DBQ=$i5_libl;"
-             . "DFT=$i5_date_fmt;"
-             . "DSP=$i5_date_sep;"
-             . "DEC=$i5_decimal_sep;"
-             . "TFT=$i5_time_fmt;"
-             . "TSP=$i5_time_sep;"
-             . "CCSID=$ccsid";
+        $dsn = "odbc:"
+             // General settings
+             . "DRIVER={iSeries Access ODBC Driver};"
+             . "SYSTEM=$host;"
+             . "UserID=$username;"
+             . "Password=$password;"
+             //Server settings
+             . "DATABASE=$database;"
+             . "SIGNON=$signon;"
+             . "SSL=$ssl;"
+             . "CommitMode=$commitMode;"
+             . "ConnectionType=$connectionType;"
+             . "DefaultLibraries=$defaultLibraries;"
+             . "Naming=$naming;"
+             . "UNICODESQL=$unicodeSql;"
+             // Format settings
+             . "DateFormat=$dateFormat;"
+             . "DateSeperator=$dateSeperator;"
+             . "Decimal=$decimal;"
+             . "TimeFormat=$timeFormat;"
+             . "TimeSeparator=$timeSeparator;"
+             // Performances settings
+             . "BLOCKFETCH=$blockFetch;"
+             . "BlockSizeKB=$blockSizeKB;"
+             . "AllowDataCompression=$allowDataCompression;"
+             . "CONCURRENCY=$concurrency;"
+             . "LAZYCLOSE=$lazyClose;"
+             . "MaxFieldLength=$maxFieldLength;"
+             . "PREFETCH=$prefetch;"
+             . "QUERYTIMEOUT=$queryTimeout;"
+             // Modules settings
+             . "DefaultPkgLibrary=$defaultPkgLibrary;"
+             . "DefaultPackage=$defaultPackage;"
+             . "ExtendedDynamic=$extendedDynamic;"
+             // Diagnostic settings
+             . "QAQQINILibrary=$QAQQINILibrary;"
+             . "SQDIAGCODE=$sqDiagCode;"
+             // Sort settings
+             . "LANGUAGEID=$languageId;"
+             . "SORTTABLE=$sortTable;"
+             . "SortSequence=$sortSequence;"
+             . "SORTWEIGHT=$sortWeight;"
+             // Conversion settings
+             . "AllowUnsupportedChar=$allowUnsupportedChar;"
+             . "CCSID=$ccsid;"
+             . "GRAPHIC=$graphic;"
+             . "ForceTranslation=$forceTranslation;"
+             // Other settings
+             . "ALLOWPROCCALLS=$allowProcCalls;"
+             . "DB2SQLSTATES=$DB2SqlStates;"
+             . "DEBUG=$debug;"
+             . "TRUEAUTOCOMMIT=$trueAutoCommit;"
+             . "CATALOGOPTIONS=$catalogOptions;"
+             . "LibraryView=$libraryView;"
+             . "ODBCRemarks=$ODBCRemarks;"
+             . "SEARCHPATTERN=$searchPattern;"
+             . "TranslationDLL=$translationDLL;"
+             . "TranslationOption=$translationOption;"
+             . "MAXTRACESIZE=$maxTraceSize;"
+             . "MultipleTraceFiles=$multipleTraceFiles;"
+             . "TRACE=$trace;"
+             . "TRACEFILENAME=$traceFilename;"
+             . "ExtendedColInfo=$extendedColInfo;"
+             ;
 
         return $dsn;
     }
