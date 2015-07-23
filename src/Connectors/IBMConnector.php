@@ -4,6 +4,8 @@ namespace Cooperl\Database\DB2\Connectors;
 use Illuminate\Database\Connectors\Connector;
 use Illuminate\Database\Connectors\ConnectorInterface;
 
+use PDO;
+
 class IBMConnector extends Connector implements ConnectorInterface
 {
 
