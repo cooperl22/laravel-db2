@@ -61,7 +61,7 @@ class IBMConnector extends Connector implements ConnectorInterface
                 break;
         }
 
-        $options = array_merge($this->getOptions($config), $options) ;
+        $options = $this->getOptions($config) + $options;
 
         $connection = $this->createConnection($dsn, $config, $options);
 
