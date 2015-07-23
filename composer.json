@@ -20,10 +20,5 @@
         "psr-4": {
             "Cooperl\\Database\\DB2\\": "src/"
         }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
     }
 }
