@@ -59,7 +59,7 @@ Simply add this code at the end of your ``app/config/database.php`` file:
     'ibmi' => [
         'driver'               => 'odbc' / 'ibm',
          // General settings
-        'host'                 => 'gigc',
+        'host'                 => 'server',
         'username'             => '',
         'password'             => '',
         //Server settings

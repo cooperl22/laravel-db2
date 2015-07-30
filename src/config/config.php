@@ -64,7 +64,7 @@ return [
         'ibmi' => [
             'driver'               => 'odbc' / 'ibm',
              // General settings
-            'host'                 => 'gigc',
+            'host'                 => 'server',
             'username'             => '',
             'password'             => '',
             //Server settings
