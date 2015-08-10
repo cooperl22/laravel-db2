@@ -64,6 +64,7 @@ return [
         'ibmi' => [
             'driver'               => 'odbc' / 'ibm',
              // General settings
+            'ibmDriver'            => 'iSeries Access ODBC Driver',
             'host'                 => 'server',
             'username'             => '',
             'password'             => '',
