@@ -23,7 +23,7 @@ Add laravel-db2 to your composer.json file:
 
 ```
 "require": {
-    "michaelb/laravel-db2": "~1.0"
+    "michaelb/laravel-db2": "~2.0"
 }
 ```
 
