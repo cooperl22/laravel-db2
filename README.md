@@ -120,7 +120,7 @@ if driver is 'ibm', database must be set to IBMi database name (WRKRDBDIRE).
 Run on the command line from the root of your project:
 
 ```
-$ php artisan config:publish cooperl/laravel-db2
+$ php artisan config:publish michaelb/laravel-db2
 ```
 
 Set your laravel-db2 credentials in ``app/config/packages/michaelb/laravel-db2/config.php``
