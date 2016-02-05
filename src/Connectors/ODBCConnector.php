@@ -30,7 +30,7 @@ class ODBCConnector extends Connector implements ConnectorInterface
 
         $dsn = "odbc:"
              // General settings
-             . "DRIVER={iSeries Access ODBC Driver};"
+             . "DRIVER={$ibmDriver};"
              . "SYSTEM=$host;"
              . "UserID=$username;"
              . "Password=$password;"
