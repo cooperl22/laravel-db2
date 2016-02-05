@@ -22,7 +22,7 @@ class DB2Grammar extends Grammar {
      *
      * @var array
      */
-    protected $serials = ['bigInteger', 'integer', 'smallInteger'];
+    protected $serials = ['smallInteger', 'integer', 'bigInteger'];
 
     /**
      * Wrap a single string in keyword identifiers.
@@ -682,7 +682,7 @@ class DB2Grammar extends Grammar {
     {
         if (in_array($column->type, $this->serials) && $column->autoIncrement)
         {
-            return ' as identity';
+            return ' as identity constraint ' . $blueprint->getTable() . '_' . $column->name . '_primary primary key';
         }
     }
 
