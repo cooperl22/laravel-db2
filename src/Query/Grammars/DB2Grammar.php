@@ -79,6 +79,12 @@ class DB2Grammar extends Grammar
 
         $columns = (!empty($components['columns']) ? $components['columns'] . ', ': 'select');
 
+        // DB2 doesn't allow unqualified * followed by more columns, 
+        // see https://github.com/cooperl22/laravel-db2/issues/7
+        if($columns == 'select *, ' && $query->from){ 
+            $columns = 'select '.$this->tablePrefix.$query->from.'.*, ';
+        }
+
         $components['columns'] = $this->compileOver($orderings, $columns);
 
         unset($components['orders']);
