@@ -56,13 +56,13 @@ PDO::CASE_NATURAL
 
 */
 
-
 return [
     
     'connections' => [
 
         'ibmi' => [
-            'driver'               => 'odbc' / 'ibm',
+            'type'                 => 'odbc' / 'ibm',
+            'name'                 => '{IBM i Access ODBC Driver}' / '{iSeries Access ODBC Driver}',
              // General settings
             'host'                 => 'server',
             'username'             => '',
@@ -131,6 +131,17 @@ return [
                 PDO::ATTR_CASE => PDO::CASE_LOWER,
                 PDO::ATTR_EMULATE_PREPARES => false,
                 PDO::ATTR_PERSISTENT => false
+            ],
+            'toolkit' => [
+                'XMLServiceLib' => 'XMLSERVICE',
+                'debug' => false,
+                'debugLogFile' => storage_path() . '/logs/toolkit.log',
+                'InternalKey' => '/tmp/' . 'Toolkit_' . app()->environment() . '_' . rand(1, 10),
+                'stateless' => false,
+                'plugSize' => '4K',
+                'ccsidBefore' => "819/1147",
+                'ccsidAfter' => "1147/819",
+                'useHex' => true
             ]
         ],
 
