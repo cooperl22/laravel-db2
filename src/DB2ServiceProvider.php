@@ -45,7 +45,7 @@ class DB2ServiceProvider extends ServiceProvider {
         {
 
             //Only use configurations that feature a "odbc" or "ibm" driver
-            if(!isset($config['type']) || !in_array($config['type'], ['odbc', 'ibm']) )
+            if(!isset($config['driver']) || !in_array($config['driver'], ['odbc', 'ibm']) )
             {
                 continue;
             }
@@ -53,7 +53,7 @@ class DB2ServiceProvider extends ServiceProvider {
             //Create a connector
             $this->app['db']->extend($conn, function($config)
             {        
-                switch ($config['type']) {
+                switch ($config['driver']) {
                     case 'odbc':
                         $connector = new ODBCConnector();
                         break;
