@@ -1,5 +1,7 @@
 # laravel-db2
 
+## This is a fork of [cooperl22's laravel-db2](https://www.github.com/cooperl22/laravel-db2)
+
 [![Latest Stable Version](https://poser.pugx.org/cooperl/laravel-db2/v/stable)](https://packagist.org/packages/cooperl/laravel-db2)
 [![Total Downloads](https://poser.pugx.org/cooperl/laravel-db2/downloads)](https://packagist.org/packages/cooperl/laravel-db2)
 [![Latest Unstable Version](https://poser.pugx.org/cooperl/laravel-db2/v/unstable)](https://packagist.org/packages/cooperl/laravel-db2)
@@ -21,7 +23,7 @@ Add laravel-db2 to your composer.json file:
 
 ```
 "require": {
-    "cooperl/laravel-db2": "~2.0"
+    "michaelb/laravel-db2": "~2.0"
 }
 ```
 
@@ -37,7 +39,7 @@ Add the laravel-db2 Service Provider to your config in ``app/config/app.php``:
 
 ```php
 'providers' => [
-    'Cooperl\Database\DB2\DB2ServiceProvider'
+    MichaelB\Database\DB2\DB2ServiceProvider::class
 ],
 ```
 
@@ -56,72 +58,51 @@ Simply add this code at the end of your ``app/config/database.php`` file:
     |--------------------------------------------------------------------------
     */
 
-    'ibmi' => [
-        'driver'               => 'odbc' / 'ibm',
-         // General settings
-        'host'                 => 'server',
-        'username'             => '',
-        'password'             => '',
-        //Server settings
-        'database'             => 'WRKRDBDIRE entry',
-        'prefix'               => '',
-        'schema'               => 'default schema',
-        'signon'               => 3,
-        'ssl'                  => 0,
-        'commitMode'           => 2,
-        'connectionType'       => 0,
-        'defaultLibraries'     => '',
-        'naming'               => 0,
-        'unicodeSql'           => 0,
-        // Format settings
-        'dateFormat'           => 5,
-        'dateSeperator'        => 0,
-        'decimal'              => 0,
-        'timeFormat'           => 0,
-        'timeSeparator'        => 0,
-        // Performances settings
-        'blockFetch'           => 1,
-        'blockSizeKB'          => 32,
-        'allowDataCompression' => 1,
-        'concurrency'          => 0,
-        'lazyClose'            => 0,
-        'maxFieldLength'       => 15360,
-        'prefetch'             => 0,
-        'queryTimeout'         => 1,
-        // Modules settings
-        'defaultPkgLibrary'    => 'QGPL',
-        'defaultPackage'       => 'A/DEFAULT(IBM),2,0,1,0',
-        'extendedDynamic'      => 1,
-        // Diagnostic settings
-        'QAQQINILibrary'       => '',
-        'sqDiagCode'           => '',
-        // Sort settings
-        'languageId'           => 'ENU',
-        'sortTable'            => '',
-        'sortSequence'         => 0,
-        'sortWeight'           => 0,
-        'jobSort'              => 0,
-        // Conversion settings
-        'allowUnsupportedChar' => 0,
-        'ccsid'                => 1208,
-        'graphic'              => 0,
-        'forceTranslation'     => 0,
-        // Other settings
-        'allowProcCalls'       => 0,
-        'DB2SqlStates'         => 0,
-        'debug'                => 0,
-        'trueAutoCommit'       => 0,
-        'catalogOptions'       => 3,
-        'libraryView'          => 0,
-        'ODBCRemarks'          => 0,
-        'searchPattern'        => 1,
-        'translationDLL'       => '',
-        'translationOption'    => 0,
-        'maxTraceSize'         => 0,
-        'multipleTraceFiles'   => 1,
-        'trace'                => 0,
-        'traceFilename'        => '',
-        'extendedColInfo'      => 0,
+    'odbc' => [
+        'driver'         => 'odbc',
+        'host'           => '',
+        'database'       => '',
+        'username'       => '',
+        'password'       => '',
+        'charset'        => 'utf8',
+        'ccsid'          => 1208,
+        'prefix'         => '',
+        'schema'         => '',
+        'i5_libl'        => '',
+        'i5_lib'         => '',
+        'i5_commit'      => 0,
+        'i5_naming'      => 0,
+        'i5_date_fmt'    => 5,
+        'i5_date_sep'    => 0,
+        'i5_decimal_sep' => 0,
+        'i5_time_fmt'    => 0,
+        'i5_time_sep'    => 0,
+        'options'  => [
+            PDO::ATTR_CASE => PDO::CASE_LOWER,
+            PDO::ATTR_EMULATE_PREPARES => false,
+            PDO::ATTR_PERSISTENT => false
+            ]
+    ],
+
+    'ibm' => [
+        'driver'         => 'ibm',
+        'host'           => '',
+        'database'       => '',
+        'username'       => '',
+        'password'       => '',
+        'charset'        => 'utf8',
+        'ccsid'          => 1208,
+        'prefix'         => '',
+        'schema'         => '',
+        'i5_libl'        => '',
+        'i5_lib'         => '',
+        'i5_commit'      => 0,
+        'i5_naming'      => 0,
+        'i5_date_fmt'    => 5,
+        'i5_date_sep'    => 0,
+        'i5_decimal_sep' => 0,
+        'i5_time_fmt'    => 0,
+        'i5_time_sep'    => 0,
         'options'  => [
             PDO::ATTR_CASE => PDO::CASE_LOWER,
             PDO::ATTR_EMULATE_PREPARES => false,
@@ -139,10 +120,10 @@ if driver is 'ibm', database must be set to IBMi database name (WRKRDBDIRE).
 Run on the command line from the root of your project:
 
 ```
-$ php artisan config:publish cooperl/laravel-db2
+$ php artisan config:publish michaelb/laravel-db2
 ```
 
-Set your laravel-db2 credentials in ``app/config/packages/cooperl/laravel-db2/config.php``
+Set your laravel-db2 credentials in ``app/config/packages/michaelb/laravel-db2/config.php``
 the same way as above
 
 

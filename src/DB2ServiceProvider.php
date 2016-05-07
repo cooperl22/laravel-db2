@@ -1,8 +1,8 @@
 <?php
-namespace Cooperl\Database\DB2;
+namespace MichaelB\Database\DB2;
 
-use Cooperl\Database\DB2\Connectors\ODBCConnector;
-use Cooperl\Database\DB2\Connectors\IBMConnector;
+use MichaelB\Database\DB2\Connectors\ODBCConnector;
+use MichaelB\Database\DB2\Connectors\IBMConnector;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\AliasLoader;
