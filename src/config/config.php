@@ -61,7 +61,7 @@ return [
     'connections' => [
 
         'ibmi' => [
-            'type'                 => 'odbc' / 'ibm',
+            'driver'               => 'odbc' / 'ibm',
             'name'                 => '{IBM i Access ODBC Driver}' / '{iSeries Access ODBC Driver}',
              // General settings
             'host'                 => 'server',
