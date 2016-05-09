@@ -58,6 +58,7 @@ Simply add this code at the end of your ``app/config/database.php`` file:
 
     'ibmi' => [
         'driver'               => 'odbc' / 'ibm',
+        'name'                 => '{IBM i Access ODBC Driver}' / '{iSeries Access ODBC Driver}',
          // General settings
         'host'                 => 'server',
         'username'             => '',
