@@ -30,7 +30,7 @@ class ODBCConnector extends Connector implements ConnectorInterface
 
         $dsn = "odbc:"
              // General settings
-             . "DRIVER=$name;"
+             . "DRIVER=$driverName;"
              . "SYSTEM=$host;"
              . "UserID=$username;"
              . "Password=$password;"
