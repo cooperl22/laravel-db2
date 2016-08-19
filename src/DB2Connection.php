@@ -2,6 +2,7 @@
 
 namespace Cooperl\Database\DB2;
 
+use Cooperl\Database\DB2\Query\Processors\DB2ZOSProcessor;
 use PDO;
 
 use Illuminate\Database\Connection;
@@ -110,6 +111,10 @@ class DB2Connection extends Connection
      */
     protected function getDefaultPostProcessor()
     {
+        if ($this->config['driver'] == 'odbczos') {
+            return new DB2ZOSProcessor();
+        }
+
         return new DB2Processor();
     }
 }
