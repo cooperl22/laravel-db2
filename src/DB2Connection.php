@@ -1,4 +1,5 @@
 <?php
+
 namespace Cooperl\Database\DB2;
 
 use PDO;
@@ -10,15 +11,26 @@ use Cooperl\Database\DB2\Query\Processors\DB2Processor;
 use Cooperl\Database\DB2\Query\Grammars\DB2Grammar as QueryGrammar;
 use Cooperl\Database\DB2\Schema\Grammars\DB2Grammar as SchemaGrammar;
 
+/**
+ * Class DB2Connection
+ *
+ * @package Cooperl\Database\DB2
+ */
 class DB2Connection extends Connection
 {
-
     /**
      * The name of the default schema.
      *
      * @var string
      */
     protected $defaultSchema;
+
+    /**
+     * The name of the current schema in use.
+     *
+     * @var string
+     */
+    protected $currentSchema;
 
     public function __construct(PDO $pdo, $database = '', $tablePrefix = '', array $config = [])
     {
@@ -49,6 +61,8 @@ class DB2Connection extends Connection
     /**
      * Set the name of the current schema.
      *
+     * @param $schema
+     *
      * @return string
      */
     public function setCurrentSchema($schema)
@@ -64,37 +78,38 @@ class DB2Connection extends Connection
      */
     public function getSchemaBuilder()
     {
-        if (is_null($this->schemaGrammar)) { $this->useDefaultSchemaGrammar(); }
+        if (is_null($this->schemaGrammar)) {
+            $this->useDefaultSchemaGrammar();
+        }
 
         return new Builder($this);
     }
 
     /**
-     * @return Query\Grammars\Grammar
+     * @return \Illuminate\Database\Grammar
      */
     protected function getDefaultQueryGrammar()
     {
-        return $this->withTablePrefix(new QueryGrammar);
+        return $this->withTablePrefix(new QueryGrammar());
     }
 
     /**
      * Default grammar for specified Schema
-     * @return Schema\Grammars\Grammar
+     *
+     * @return \Illuminate\Database\Grammar
      */
     protected function getDefaultSchemaGrammar()
     {
-
-        return $this->withTablePrefix(new SchemaGrammar);
+        return $this->withTablePrefix(new SchemaGrammar());
     }
 
     /**
-    * Get the default post processor instance.
-    *
-    * @return \Illuminate\Database\Query\Processors\PostgresProcessor
-    */
+     * Get the default post processor instance.
+     *
+     * @return \Illuminate\Database\Query\Processors\PostgresProcessor
+     */
     protected function getDefaultPostProcessor()
     {
-        return new DB2Processor;
+        return new DB2Processor();
     }
-
 }
