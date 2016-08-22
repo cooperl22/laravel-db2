@@ -67,7 +67,7 @@ Simply add this code at the end of your ``app/config/database.php`` file:
         'database'             => 'WRKRDBDIRE entry',
         'prefix'               => '',
         'schema'               => 'default schema',
-	'port'                 => 50000,
+        'port'                 => 50000,
         'signon'               => 3,
         'ssl'                  => 0,
         'commitMode'           => 2,
