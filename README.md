@@ -57,7 +57,7 @@ Simply add this code at the end of your ``app/config/database.php`` file:
     */
 
     'ibmi' => [
-        'driver'               => 'odbc' / 'ibm',
+        'driver'               => 'odbc' / 'ibm' / 'odbczos',
         'driverName'           => '{IBM i Access ODBC Driver}' / '{iSeries Access ODBC Driver}',
          // General settings
         'host'                 => 'server',
@@ -67,6 +67,7 @@ Simply add this code at the end of your ``app/config/database.php`` file:
         'database'             => 'WRKRDBDIRE entry',
         'prefix'               => '',
         'schema'               => 'default schema',
+	'port'                 => 50000,
         'signon'               => 3,
         'ssl'                  => 0,
         'commitMode'           => 2,
