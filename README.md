@@ -45,7 +45,7 @@ Add the laravel-db2 Service Provider to your config in ``app/config/app.php``:
 
 There are two ways to configure laravel-db2. You can choose the most convenient way for you. You can put your DB2 credentials into ``app/config/database.php`` (option 1) file or use package config file which you can be generated through command line by artisan (option 2).
 
-#### Option 1: Configure DB2 using ``app/config/database.php`` file 
+#### Option 1: Configure DB2 using ``app/config/database.php`` file
 
 Simply add this code at the end of your ``app/config/database.php`` file:
 

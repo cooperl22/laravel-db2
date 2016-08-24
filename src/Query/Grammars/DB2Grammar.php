@@ -50,6 +50,10 @@ class DB2Grammar extends Grammar
      */
     public function compileSelect(Builder $query)
     {
+        if (is_null($query->columns)) {
+            $query->columns = array('*');
+        }
+
         $components = $this->compileComponents($query);
 
         // If an offset is present on the query, we will need to wrap the query in
