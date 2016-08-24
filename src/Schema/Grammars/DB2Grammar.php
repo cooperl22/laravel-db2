@@ -92,7 +92,7 @@ class DB2Grammar extends Grammar {
      * @return string
      */
     public function compileLabel(Blueprint $blueprint, Fluent $command, Connection $connection)
-    {      
+    {
         return 'label on table '.$this->wrapTable($blueprint).' is \'' . $command->label . '\'';
     }
 

@@ -48,7 +48,7 @@ class DB2Processor extends Processor {
             $sequenceStr = $grammar->columnize($sequence);
         }
         $sql = 'select ' . $sequenceStr . ' from new table (' . $sql;
-        $sql .= ')';    
+        $sql .= ')';
         $results = $query->getConnection()->select($sql, $values);
         if (is_array($sequence))
         {
@@ -60,7 +60,6 @@ class DB2Processor extends Processor {
             $id = $result[$sequenceStr];
             return is_numeric($id) ? (int) $id : $id;
         }
-        
     }
 
 }

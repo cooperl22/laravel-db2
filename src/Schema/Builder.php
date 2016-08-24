@@ -20,7 +20,7 @@ class Builder extends \Illuminate\Database\Schema\Builder {
         if (count($schemaTable) > 1)
         {
             $schema = $schemaTable[0];
-            $table = $this->connection->getTablePrefix().$schemaTable[1];           
+            $table = $this->connection->getTablePrefix().$schemaTable[1];
         }
         else
         {

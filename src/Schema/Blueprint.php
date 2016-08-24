@@ -46,7 +46,6 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint {
                 $index = $this->createIndexName($type, $columns);
                 return $this->addCommand($type, compact('index', 'indexSystem', 'columns'));
                 break;
-            
             default:
                 break;
         }

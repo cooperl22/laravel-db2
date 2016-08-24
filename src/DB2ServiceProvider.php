@@ -52,7 +52,7 @@ class DB2ServiceProvider extends ServiceProvider {
 
             //Create a connector
             $this->app['db']->extend($conn, function($config)
-            {        
+            {
                 switch ($config['driver']) {
                     case 'odbc':
                         $connector = new ODBCConnector();

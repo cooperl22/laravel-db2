@@ -57,7 +57,7 @@ PDO::CASE_NATURAL
 */
 
 return [
-    
+
     'connections' => [
 
         'ibmi' => [

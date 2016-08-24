@@ -6,7 +6,7 @@ use Illuminate\Database\Query\Builder;
 
 class DB2Grammar extends Grammar
 {
-     
+
      /**
      * Wrap a single string in keyword identifiers.
      *
