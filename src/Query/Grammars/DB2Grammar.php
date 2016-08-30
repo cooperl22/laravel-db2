@@ -51,7 +51,7 @@ class DB2Grammar extends Grammar
     public function compileSelect(Builder $query)
     {
         if (is_null($query->columns)) {
-            $query->columns = array('*');
+            $query->columns = ['*'];
         }
 
         $components = $this->compileComponents($query);
@@ -91,6 +91,10 @@ class DB2Grammar extends Grammar
         $orderings = $components['orders'];
 
         $columns = (!empty($components['columns']) ? $components['columns'].', ' : 'select');
+
+        if ($columns == 'select *, ' && $query->from) {
+            $columns = 'select '.$this->tablePrefix.$query->from.'.*, ';
+        }
 
         $components['columns'] = $this->compileOver($orderings, $columns);
 
