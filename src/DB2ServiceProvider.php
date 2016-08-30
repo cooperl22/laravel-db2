@@ -1,15 +1,20 @@
 <?php
+
 namespace Cooperl\Database\DB2;
 
 use Cooperl\Database\DB2\Connectors\ODBCConnector;
 use Cooperl\Database\DB2\Connectors\IBMConnector;
-
+use Cooperl\Database\DB2\Connectors\ODBCZOSConnector;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Foundation\AliasLoader;
 use Config;
 
-class DB2ServiceProvider extends ServiceProvider {
-
+/**
+ * Class DB2ServiceProvider
+ *
+ * @package Cooperl\Database\DB2
+ */
+class DB2ServiceProvider extends ServiceProvider
+{
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -33,42 +38,47 @@ class DB2ServiceProvider extends ServiceProvider {
      */
     public function register()
     {
-
         // get the configs
-        $conns = is_array(Config::get('laravel-db2::database.connections')) ? Config::get('laravel-db2::database.connections') : [];
+        $conns = is_array(Config::get('laravel-db2::database.connections'))
+            ? Config::get('laravel-db2::database.connections')
+            : [];
 
         // Add my database configurations to the default set of configurations
-        $this->app['config']['database.connections'] = array_merge($conns, $this->app['config']['database.connections']);
+        $this->app['config']['database.connections'] = array_merge(
+            $conns,
+            $this->app['config']['database.connections']
+        );
 
-        //Extend the connections with pdo_odbc and pdo_ibm drivers
-        foreach(Config::get('database.connections') as $conn => $config)
-        {
-
-            //Only use configurations that feature a "odbc" or "ibm" driver
-            if(!isset($config['driver']) || !in_array($config['driver'], ['odbc', 'ibm']) )
-            {
+        // Extend the connections with pdo_odbc and pdo_ibm drivers
+        foreach (Config::get('database.connections') as $conn => $config) {
+            // Only use configurations that feature a "odbc", "ibm" or "odbczos" driver
+            if (!isset($config['driver']) || !in_array($config['driver'], ['odbc', 'ibm', 'odbczos'])) {
                 continue;
             }
 
-            //Create a connector
-            $this->app['db']->extend($conn, function($config)
-            {
+            // Create a connector
+            $this->app['db']->extend($conn, function ($config) {
                 switch ($config['driver']) {
                     case 'odbc':
                         $connector = new ODBCConnector();
+
+                        break;
+                    case 'odbczos':
+                        $connector = new ODBCZOSConnector();
+
                         break;
                     case 'ibm':
-                        $connector = new IBMConnector();
-                        break;
                     default:
+                        $connector = new IBMConnector();
+
                         break;
                 }
+
                 $db2Connection = $connector->connect($config);
+
                 return new DB2Connection($db2Connection, $config["database"], $config["prefix"], $config);
             });
-
         }
-
     }
 
     /**
@@ -80,5 +90,4 @@ class DB2ServiceProvider extends ServiceProvider {
     {
         return [];
     }
-
 }

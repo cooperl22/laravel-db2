@@ -1,29 +1,34 @@
 <?php
+
 namespace Cooperl\Database\DB2\Schema;
 
 use Closure;
 use Illuminate\Database\Schema\Blueprint;
 
-class Builder extends \Illuminate\Database\Schema\Builder {
+/**
+ * Class Builder
+ *
+ * @package Cooperl\Database\DB2\Schema
+ */
+class Builder extends \Illuminate\Database\Schema\Builder
+{
 
     /**
      * Determine if the given table exists.
      *
-     * @param  string  $table
+     * @param  string $table
+     *
      * @return bool
      */
     public function hasTable($table)
     {
         $sql = $this->grammar->compileTableExists();
-
         $schemaTable = explode(".", $table);
-        if (count($schemaTable) > 1)
-        {
+
+        if (count($schemaTable) > 1) {
             $schema = $schemaTable[0];
             $table = $this->connection->getTablePrefix().$schemaTable[1];
-        }
-        else
-        {
+        } else {
             $schema = $this->connection->getDefaultSchema();
             $table = $this->connection->getTablePrefix().$table;
         }
@@ -34,17 +39,15 @@ class Builder extends \Illuminate\Database\Schema\Builder {
     /**
      * Get the column listing for a given table.
      *
-     * @param  string  $table
+     * @param  string $table
+     *
      * @return array
      */
     public function getColumnListing($table)
     {
         $sql = $this->grammar->compileColumnExists();
-
         $database = $this->connection->getDatabaseName();
-
         $table = $this->connection->getTablePrefix().$table;
-
         $results = $this->connection->select($sql, [$database, $table]);
 
         return $this->connection->getPostProcessor()->processColumnListing($results);
@@ -53,37 +56,34 @@ class Builder extends \Illuminate\Database\Schema\Builder {
     /**
      * Execute the blueprint to build / modify the table.
      *
-     * @param  \Cooperl\Database\DB2\Schema\Blueprint  $blueprint
-     * @return void
+     * @param Blueprint $blueprint
      */
     protected function build(Blueprint $blueprint)
     {
         $schemaTable = explode(".", $blueprint->getTable());
-        if (count($schemaTable) > 1)
-        {
+
+        if (count($schemaTable) > 1) {
             $this->connection->setCurrentSchema($schemaTable[0]);
         }
 
         $blueprint->build($this->connection, $this->grammar);
-
         $this->connection->resetCurrentSchema();
     }
 
     /**
      * Create a new command set with a Closure.
      *
-     * @param  string    $table
-     * @param  \Closure  $callback
+     * @param  string $table
+     * @param  \Closure $callback
+     *
      * @return \Cooperl\Database\DB2\Schema\Blueprint
      */
     protected function createBlueprint($table, Closure $callback = null)
     {
-        if (isset($this->resolver))
-        {
+        if (isset($this->resolver)) {
             return call_user_func($this->resolver, $table, $callback);
         }
 
         return new \Cooperl\Database\DB2\Schema\Blueprint($table, $callback);
     }
-
 }
