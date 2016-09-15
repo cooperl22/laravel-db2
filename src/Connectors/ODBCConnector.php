@@ -40,47 +40,73 @@ class ODBCConnector extends Connector implements ConnectorInterface
      */
     protected function getDsn(array $config)
     {
-        $dsnParts = [
-            'odbc:DRIVER=%s', 'SYSTEM=%s', 'UserID=%s', 'Password=%s', 'DATABASE=%s', 'SIGNON=%s', 'SSL=%s',
-            'CommitMode=%s', 'ConnectionType=%s', 'DefaultLibraries=%s', 'Naming=%s', 'UNICODESQL=%s', 'DateFormat=%s',
-            'DateSeperator=%s', 'Decimal=%s', 'TimeFormat=%s', 'TimeSeparator=%s', 'BLOCKFETCH=%s', 'BlockSizeKB=%s',
-            'AllowDataCompression=%s', 'CONCURRENCY=%s', 'LAZYCLOSE=%s', 'MaxFieldLength=%s', 'PREFETCH=%s',
-            'QUERYTIMEOUT=%s', 'DefaultPkgLibrary=%s', 'DefaultPackage=%s', 'ExtendedDynamic=%s', 'QAQQINILibrary=%s',
-            'SQDIAGCODE=%s', 'LANGUAGEID=%s', 'SORTTABLE=%s', 'SortSequence=%s', 'SORTWEIGHT=%s',
-            'AllowUnsupportedChar=%s', 'CCSID=%s', 'GRAPHIC=%s', 'ForceTranslation=%s', 'ALLOWPROCCALLS=%s',
-            'DB2SQLSTATES=%s', 'DEBUG=%s', 'TRUEAUTOCOMMIT=%s', 'CATALOGOPTIONS=%s', 'LibraryView=%s', 'ODBCRemarks=%s',
-            'SEARCHPATTERN=%s', 'TranslationDLL=%s', 'TranslationOption=%s', 'MAXTRACESIZE=%s', 'MultipleTraceFiles=%s',
-            'TRACE=%s', 'TRACEFILENAME=%s', 'ExtendedColInfo=%s',
-            '', // Just to add a semicolon to the end of string
-        ];
+        extract($config);
 
-        $dsnConfig = [
-            // General settings
-            $config['driverName'], $config['host'], $config['username'], $config['password'],
-            //Server settings
-            $config['database'], $config['signon'], $config['ssl'], $config['commitMode'], $config['connectionType'],
-            $config['defaultLibraries'], $config['naming'], $config['unicodeSql'],
-            // Format settings
-            $config['dateFormat'], $config['dateSeperator'], $config['decimal'], $config['timeFormat'],
-            $config['timeSeparator'],
-            // Performances settings
-            $config['blockFetch'], $config['blockSizeKB'], $config['allowDataCompression'], $config['concurrency'],
-            $config['lazyClose'], $config['maxFieldLength'], $config['prefetch'], $config['queryTimeout'],
-            // Modules settings
-            $config['defaultPkgLibrary'], $config['defaultPackage'], $config['extendedDynamic'],
-            // Diagnostic settings
-            $config['QAQQINILibrary'], $config['sqDiagCode'],
-            // Sort settings
-            $config['languageId'], $config['sortTable'], $config['sortSequence'], $config['sortWeight'],
-            // Conversion settings
-            $config['allowUnsupportedChar'], $config['ccsid'], $config['graphic'], $config['forceTranslation'],
-            // Other settings
-            $config['allowProcCalls'], $config['DB2SqlStates'], $config['debug'], $config['trueAutoCommit'],
-            $config['catalogOptions'], $config['libraryView'], $config['ODBCRemarks'], $config['searchPattern'],
-            $config['translationDLL'], $config['translationOption'], $config['maxTraceSize'],
-            $config['multipleTraceFiles'], $config['trace'], $config['traceFilename'], $config['extendedColInfo'],
-        ];
+        $dsn = "odbc:"
+             // General settings
+             . "DRIVER=$driverName;"
+             . "SYSTEM=$host;"
+             . "UserID=$username;"
+             . "Password=$password;"
+             //Server settings
+             . "DATABASE=$database;"
+             . "SIGNON=$signon;"
+             . "SSL=$ssl;"
+             . "CommitMode=$commitMode;"
+             . "ConnectionType=$connectionType;"
+             . "DefaultLibraries=$defaultLibraries;"
+             . "Naming=$naming;"
+             . "UNICODESQL=$unicodeSql;"
+             // Format settings
+             . "DateFormat=$dateFormat;"
+             . "DateSeperator=$dateSeperator;"
+             . "Decimal=$decimal;"
+             . "TimeFormat=$timeFormat;"
+             . "TimeSeparator=$timeSeparator;"
+             // Performances settings
+             . "BLOCKFETCH=$blockFetch;"
+             . "BlockSizeKB=$blockSizeKB;"
+             . "AllowDataCompression=$allowDataCompression;"
+             . "CONCURRENCY=$concurrency;"
+             . "LAZYCLOSE=$lazyClose;"
+             . "MaxFieldLength=$maxFieldLength;"
+             . "PREFETCH=$prefetch;"
+             . "QUERYTIMEOUT=$queryTimeout;"
+             // Modules settings
+             . "DefaultPkgLibrary=$defaultPkgLibrary;"
+             . "DefaultPackage=$defaultPackage;"
+             . "ExtendedDynamic=$extendedDynamic;"
+             // Diagnostic settings
+             . "QAQQINILibrary=$QAQQINILibrary;"
+             . "SQDIAGCODE=$sqDiagCode;"
+             // Sort settings
+             . "LANGUAGEID=$languageId;"
+             . "SORTTABLE=$sortTable;"
+             . "SortSequence=$sortSequence;"
+             . "SORTWEIGHT=$sortWeight;"
+             // Conversion settings
+             . "AllowUnsupportedChar=$allowUnsupportedChar;"
+             . "CCSID=$ccsid;"
+             . "GRAPHIC=$graphic;"
+             . "ForceTranslation=$forceTranslation;"
+             // Other settings
+             . "ALLOWPROCCALLS=$allowProcCalls;"
+             . "DB2SQLSTATES=$DB2SqlStates;"
+             . "DEBUG=$debug;"
+             . "TRUEAUTOCOMMIT=$trueAutoCommit;"
+             . "CATALOGOPTIONS=$catalogOptions;"
+             . "LibraryView=$libraryView;"
+             . "ODBCRemarks=$ODBCRemarks;"
+             . "SEARCHPATTERN=$searchPattern;"
+             . "TranslationDLL=$translationDLL;"
+             . "TranslationOption=$translationOption;"
+             . "MAXTRACESIZE=$maxTraceSize;"
+             . "MultipleTraceFiles=$multipleTraceFiles;"
+             . "TRACE=$trace;"
+             . "TRACEFILENAME=$traceFilename;"
+             . "ExtendedColInfo=$extendedColInfo;"
+             ;
 
-        return sprintf(implode(';', $dsnParts), ...$dsnConfig);
+        return $dsn;
     }
 }
