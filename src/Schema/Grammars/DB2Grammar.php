@@ -639,7 +639,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeDateTime(Fluent $column)
     {
-        return 'timestamp';
+        return 'timestamp default current_timestamp';
     }
 
     /**
