@@ -181,4 +181,16 @@ class DB2Grammar extends Grammar
     {
         return 'Y-m-d H:i:s.u';
     }
+
+
+    /**
+     * Compile the random statement into SQL.
+     *
+     * @param  string  $seed
+     * @return string
+     */
+    public function compileRandom($seed)
+    {
+        return "RAND($seed)";
+    }
 }
