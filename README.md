@@ -21,7 +21,7 @@ Add laravel-db2 to your composer.json file:
 
 ```
 "require": {
-    "cooperl/laravel-db2": "~5.3"
+    "cooperl/laravel-db2": "~5.4"
 }
 ```
 
