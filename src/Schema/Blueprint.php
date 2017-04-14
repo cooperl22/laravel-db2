@@ -37,10 +37,11 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param  string $type
      * @param  string|array $columns
      * @param  string $index
+     * @param  string|null $algorithm
      *
      * @return \Illuminate\Support\Fluent
      */
-    protected function indexCommand($type, $columns, $index)
+    protected function indexCommand($type, $columns, $index, $algorithm = null)
     {
         $columns = (array) $columns;
 
