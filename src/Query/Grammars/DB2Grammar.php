@@ -193,4 +193,15 @@ class DB2Grammar extends Grammar
     {
         return "RAND($seed)";
     }
+
+    /**
+     * Compile the SQL statement to define a savepoint.
+     *
+     * @param  string  $name
+     * @return string
+     */
+    public function compileSavepoint($name)
+    {
+        return 'SAVEPOINT '.$name.' ON ROLLBACK RETAIN CURSORS';
+    }
 }
