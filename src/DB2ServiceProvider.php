@@ -6,7 +6,6 @@ use Cooperl\Database\DB2\Connectors\ODBCConnector;
 use Cooperl\Database\DB2\Connectors\IBMConnector;
 use Cooperl\Database\DB2\Connectors\ODBCZOSConnector;
 use Illuminate\Support\ServiceProvider;
-use Config;
 
 /**
  * Class DB2ServiceProvider
@@ -39,18 +38,13 @@ class DB2ServiceProvider extends ServiceProvider
     public function register()
     {
         // get the configs
-        $conns = is_array(Config::get('laravel-db2::database.connections'))
-            ? Config::get('laravel-db2::database.connections')
-            : [];
+        $conns = is_array(config('laravel-db2::database.connections')) ? config('laravel-db2::database.connections') : [];
 
         // Add my database configurations to the default set of configurations
-        $this->app['config']['database.connections'] = array_merge(
-            $conns,
-            $this->app['config']['database.connections']
-        );
+        config(['database.connections' => array_merge($conns, config('database.connections'))]);
 
         // Extend the connections with pdo_odbc and pdo_ibm drivers
-        foreach (Config::get('database.connections') as $conn => $config) {
+        foreach (config('database.connections') as $conn => $config) {
             // Only use configurations that feature a "odbc", "ibm" or "odbczos" driver
             if (!isset($config['driver']) || !in_array($config['driver'], ['odbc', 'ibm', 'odbczos'])) {
                 continue;
