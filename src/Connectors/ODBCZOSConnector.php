@@ -24,8 +24,7 @@ class ODBCZOSConnector extends ODBCConnector
             'Protocol=TCPIP',
             'Uid=%s',
             'Pwd=%s',
-            '',
-            // Just to add a semicolon to the end of string
+            '', // Just to add a semicolon to the end of string
         ];
 
         $dsnConfig = [
