@@ -13,11 +13,23 @@ use Cooperl\Database\DB2\Query\Grammars\DB2Grammar;
  */
 class DB2Processor extends Processor
 {
+
+    private $bdType;
+
+    /**
+     * DB2Processor constructor.
+     *
+     * @param $bdType
+     */
+    public function __construct($bdType)
+    {
+        $this->bdType = $bdType;
+    }
     /**
      * Process the results of a "select" query.
      *
      * @param  \Illuminate\Database\Query\Builder $query
-     * @param  array $results
+     * @param  array                              $results
      *
      * @return array
      */
@@ -37,13 +49,15 @@ class DB2Processor extends Processor
         return $results;
     }*/
 
+
+
     /**
      * Process an "insert get ID" query.
      *
      * @param  \Illuminate\Database\Query\Builder $query
-     * @param  string $sql
-     * @param  array $values
-     * @param  string $sequence
+     * @param  string                             $sql
+     * @param  array                              $values
+     * @param  string                             $sequence
      *
      * @return int/array
      */
@@ -52,19 +66,24 @@ class DB2Processor extends Processor
         $sequenceStr = $sequence ?: 'id';
 
         if (is_array($sequence)) {
-            $grammar = new DB2Grammar();
+            $grammar = new DB2Grammar($this->bdType);
             $sequenceStr = $grammar->columnize($sequence);
         }
 
-        $sql = 'select '.$sequenceStr.' from new table ('.$sql;
+        $sql = 'select ' . $sequenceStr . ' from new table (' . $sql;
         $sql .= ')';
-        $results = $query->getConnection()->select($sql, $values);
+        $results = $query->getConnection()
+                         ->select($sql, $values);
 
         if (is_array($sequence)) {
             return array_values((array) $results[0]);
         } else {
             $result = (array) $results[0];
-            $id = $result[$sequenceStr];
+            if (isset($result[$sequenceStr])) {
+                $id = $result[$sequenceStr];
+            } else {
+                $id = $result[strtoupper($sequenceStr)];
+            }
 
             return is_numeric($id) ? (int) $id : $id;
         }

@@ -9,6 +9,28 @@ namespace Cooperl\Database\DB2\Schema;
  */
 class Blueprint extends \Illuminate\Database\Schema\Blueprint
 {
+
+    public function synchro($index, $masterizable = false)
+    {
+
+        $this->string('id_sync', 20)
+             ->index($index);
+        $this->string('hashcode', 32);
+
+        if (true === $masterizable) {
+            $this->boolean('data_master')
+                 ->default(true);
+        }
+    }
+
+    /**
+     * @param string $index
+     */
+    public function dropSynchro($index)
+    {
+        $this->dropColumn('id_sync', 'hashcode');
+        $this->dropIndex($index);
+    }
     /**
      * Specify a system name for the table.
      *
@@ -37,11 +59,10 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
      * @param  string $type
      * @param  string|array $columns
      * @param  string $index
-     * @param  string|null $algorithm
      *
      * @return \Illuminate\Support\Fluent
      */
-    protected function indexCommand($type, $columns, $index, $algorithm = null)
+    protected function indexCommand($type, $columns, $index, $algorithm = NULL)
     {
         $columns = (array) $columns;
 
@@ -50,7 +71,7 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
                 $indexSystem = false;
 
                 if (!is_null($index)) {
-                    $indexSystem = $index;
+                    //$indexSystem = $index;
                 }
 
                 $index = $this->createIndexName($type, $columns);

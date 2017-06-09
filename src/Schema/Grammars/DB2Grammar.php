@@ -10,20 +10,42 @@ use Illuminate\Database\Schema\Blueprint;
 
 class DB2Grammar extends Grammar
 {
+    private $dbType;
     /**
      * The possible column modifiers.
      *
      * @var array
      */
     protected $preModifiers = ['ForColumn'];
-    protected $modifiers = ['Nullable', 'Default', 'Generated', 'Increment', 'StartWith', 'Before', 'ImplicitlyHidden'];
-
+    protected $modifiers = [
+        'Nullable',
+        'Default',
+        'Generated',
+        'Increment',
+        'StartWith',
+        'Before',
+        'ImplicitlyHidden',
+    ];
     /**
      * The possible column serials
      *
      * @var array
      */
-    protected $serials = ['smallInteger', 'integer', 'bigInteger'];
+    protected $serials = [
+        'smallInteger',
+        'integer',
+        'bigInteger',
+    ];
+
+    /**
+     * DB2Grammar constructor.
+     *
+     * @param $dbType
+     */
+    public function __construct($dbType)
+    {
+        $this->dbType = $dbType;
+    }
 
     /**
      * Wrap a single string in keyword identifiers.
@@ -48,7 +70,11 @@ class DB2Grammar extends Grammar
      */
     public function compileTableExists()
     {
-        return 'select * from information_schema.tables where table_schema = upper(?) and table_name = upper(?)';
+        if ($this->dbType == "i") {
+            return 'select * from information_schema.tables where table_schema = upper(?) and table_name = upper(?)';
+        } else {
+            return 'select * from syspublic.all_tables where table_schema = upper(?) and table_name = upper(?)';
+        }
     }
 
     /**
@@ -58,31 +84,39 @@ class DB2Grammar extends Grammar
      */
     public function compileColumnExists()
     {
-        return "
+        if ($this->dbType == "i") {
+            return "
             select  column_name 
             from    information_schema.columns 
             where   table_schema = upper(?) 
             and     table_name = upper(?)
         ";
+        } else {
+            return "
+            select  column_name 
+            from    syspublic.all_ind_columns 
+            where   table_schema = upper(?) 
+            and     table_name = upper(?)
+        ";
+        }
     }
-
 
     /**
      * Compile a create table command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
-     * @param  \Illuminate\Database\Connection $connection
+     * @param  \Illuminate\Support\Fluent            $command
+     * @param  \Illuminate\Database\Connection       $connection
      *
      * @return string
      */
     public function compileCreate(Blueprint $blueprint, Fluent $command, Connection $connection)
     {
         $columns = implode(', ', $this->getColumns($blueprint));
-        $sql = 'create table '.$this->wrapTable($blueprint);
+        $sql = 'create table ' . $this->wrapTable($blueprint);
 
         if (isset($blueprint->systemName)) {
-            $sql .= ' for system name '.$blueprint->systemName;
+            $sql .= ' for system name ' . $blueprint->systemName;
         }
 
         $sql .= " ($columns)";
@@ -94,14 +128,14 @@ class DB2Grammar extends Grammar
      * Compile a label command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
-     * @param  \Illuminate\Database\Connection $connection
+     * @param  \Illuminate\Support\Fluent            $command
+     * @param  \Illuminate\Database\Connection       $connection
      *
      * @return string
      */
     public function compileLabel(Blueprint $blueprint, Fluent $command, Connection $connection)
     {
-        return 'label on table '.$this->wrapTable($blueprint).' is \''.$command->label.'\'';
+        return 'label on table ' . $this->wrapTable($blueprint) . ' is \'' . $command->label . '\'';
     }
 
     /**
@@ -121,7 +155,7 @@ class DB2Grammar extends Grammar
             // used by the connection. The column's modifiers are compiled and added.
             //$sql = $this->wrap($column).' '.$this->getType($column);
             $sql = $this->addPreModifiers($this->wrap($column), $blueprint, $column);
-            $sql .= ' '.$this->getType($column);
+            $sql .= ' ' . $this->getType($column);
 
             $columns[] = $this->addModifiers($sql, $blueprint, $column);
         }
@@ -132,9 +166,9 @@ class DB2Grammar extends Grammar
     /**
      * Add the column modifiers to the definition.
      *
-     * @param  string $sql
+     * @param  string                                $sql
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string
      */
@@ -153,7 +187,7 @@ class DB2Grammar extends Grammar
      * Compile a create table command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -164,7 +198,7 @@ class DB2Grammar extends Grammar
         $statements = [];
 
         foreach ($columns as $column) {
-            $statements[] = 'alter table '.$table.' '.$column;
+            $statements[] = 'alter table ' . $table . ' ' . $column;
         }
 
         return $statements;
@@ -174,7 +208,7 @@ class DB2Grammar extends Grammar
      * Compile a primary key command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -187,7 +221,7 @@ class DB2Grammar extends Grammar
         $schemaTable = explode(".", $table);
 
         if (count($schemaTable) > 1) {
-            $command->index = str_replace($schemaTable[0]."_", "", $command->index);
+            $command->index = str_replace($schemaTable[0] . "_", "", $command->index);
         }
 
         return "alter table {$table} add constraint {$command->index} primary key ({$columns})";
@@ -197,7 +231,7 @@ class DB2Grammar extends Grammar
      * Compile a foreign key command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -216,7 +250,7 @@ class DB2Grammar extends Grammar
         $schemaTable = explode(".", $table);
 
         if (count($schemaTable) > 1) {
-            $command->index = str_replace($schemaTable[0]."_", "", $command->index);
+            $command->index = str_replace($schemaTable[0] . "_", "", $command->index);
         }
 
         $sql = "alter table {$table} add constraint {$command->index} ";
@@ -240,7 +274,7 @@ class DB2Grammar extends Grammar
      * Compile a unique key command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -253,7 +287,7 @@ class DB2Grammar extends Grammar
         $schemaTable = explode(".", $table);
 
         if (count($schemaTable) > 1) {
-            $command->index = str_replace($schemaTable[0]."_", "", $command->index);
+            $command->index = str_replace($schemaTable[0] . "_", "", $command->index);
         }
 
         return "alter table {$table} add constraint {$command->index} unique({$columns})";
@@ -263,7 +297,7 @@ class DB2Grammar extends Grammar
      * Compile a plain index key command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -276,7 +310,7 @@ class DB2Grammar extends Grammar
         $schemaTable = explode(".", $table);
 
         if (count($schemaTable) > 1) {
-            $command->index = str_replace($schemaTable[0]."_", "", $command->index);
+            $command->index = str_replace($schemaTable[0] . "_", "", $command->index);
         }
 
         $sql = "create index {$command->index}";
@@ -295,33 +329,33 @@ class DB2Grammar extends Grammar
      * Compile a drop table command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
     public function compileDrop(Blueprint $blueprint, Fluent $command)
     {
-        return 'drop table '.$this->wrapTable($blueprint);
+        return 'drop table ' . $this->wrapTable($blueprint);
     }
 
     /**
      * Compile a drop table (if exists) command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
     public function compileDropIfExists(Blueprint $blueprint, Fluent $command)
     {
-        return 'drop table if exists '.$this->wrapTable($blueprint);
+        return 'drop table if exists ' . $this->wrapTable($blueprint);
     }
 
     /**
      * Compile a drop column command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -330,27 +364,27 @@ class DB2Grammar extends Grammar
         $columns = $this->prefixArray('drop', $this->wrapArray($command->columns));
         $table = $this->wrapTable($blueprint);
 
-        return 'alter table '.$table.' '.implode(', ', $columns);
+        return 'alter table ' . $table . ' ' . implode(', ', $columns);
     }
 
     /**
      * Compile a drop primary key command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
     public function compileDropPrimary(Blueprint $blueprint, Fluent $command)
     {
-        return 'alter table '.$this->wrapTable($blueprint).' drop primary key';
+        return 'alter table ' . $this->wrapTable($blueprint) . ' drop primary key';
     }
 
     /**
      * Compile a drop unique key command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -362,7 +396,7 @@ class DB2Grammar extends Grammar
         $schemaTable = explode(".", $table);
 
         if (count($schemaTable) > 1) {
-            $command->index = str_replace($schemaTable[0]."_", "", $command->index);
+            $command->index = str_replace($schemaTable[0] . "_", "", $command->index);
         }
 
         return "alter table {$table} drop index {$command->index}";
@@ -372,7 +406,7 @@ class DB2Grammar extends Grammar
      * Compile a drop index command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -384,7 +418,7 @@ class DB2Grammar extends Grammar
         $schemaTable = explode(".", $table);
 
         if (count($schemaTable) > 1) {
-            $command->index = str_replace($schemaTable[0]."_", "", $command->index);
+            $command->index = str_replace($schemaTable[0] . "_", "", $command->index);
         }
 
         return "alter table {$table} drop index {$command->index}";
@@ -394,7 +428,7 @@ class DB2Grammar extends Grammar
      * Compile a drop foreign key command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -406,7 +440,7 @@ class DB2Grammar extends Grammar
         $schemaTable = explode(".", $table);
 
         if (count($schemaTable) > 1) {
-            $command->index = str_replace($schemaTable[0]."_", "", $command->index);
+            $command->index = str_replace($schemaTable[0] . "_", "", $command->index);
         }
 
         return "alter table {$table} drop foreign key {$command->index}";
@@ -416,7 +450,7 @@ class DB2Grammar extends Grammar
      * Compile a rename table command.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $command
+     * @param  \Illuminate\Support\Fluent            $command
      *
      * @return string
      */
@@ -424,7 +458,7 @@ class DB2Grammar extends Grammar
     {
         $from = $this->wrapTable($blueprint);
 
-        return "rename table {$from} to ".$this->wrapTable($command->to);
+        return "rename table {$from} to " . $this->wrapTable($command->to);
     }
 
     /**
@@ -474,7 +508,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeMediumText(Fluent $column)
     {
-        $colLength = ($column->length ? $column->length : 16369);
+        $colLength = ($column->length ? $column->length : 16000);
 
         return "varchar($colLength)";
     }
@@ -488,7 +522,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeLongText(Fluent $column)
     {
-        $colLength = ($column->length ? $column->length : 16369);
+        $colLength = ($column->length ? $column->length : 16000);
 
         return "varchar($colLength)";
     }
@@ -550,7 +584,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeFloat(Fluent $column)
     {
-        return "float({$column->total}, {$column->places})";
+        return "decimal({$column->total}, {$column->places})";
     }
 
     /**
@@ -592,14 +626,7 @@ class DB2Grammar extends Grammar
     {
         $definition = 'smallint constraint %s_%s_%s check(%s in(0, 1)) %s';
 
-        return sprintf(
-            $definition,
-            $column->type,
-            $column->prefix,
-            $column->name,
-            $column->name,
-            is_null($column->default) ? ' default 0' : ''
-        );
+        return sprintf($definition, $column->type, $column->prefix, $column->name, $column->name, is_null($column->default) ? ' default 0' : '');
     }
 
     /**
@@ -611,7 +638,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeEnum(Fluent $column)
     {
-        return "enum('".implode("', '", $column->allowed)."')";
+        return "enum('" . implode("', '", $column->allowed) . "')";
     }
 
     /**
@@ -639,7 +666,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeDateTime(Fluent $column)
     {
-        return 'timestamp default current_timestamp';
+        return 'datetime';
     }
 
     /**
@@ -690,7 +717,7 @@ class DB2Grammar extends Grammar
      * Get the SQL for a nullable column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string|null
      */
@@ -703,14 +730,14 @@ class DB2Grammar extends Grammar
      * Get the SQL for a default column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string|null
      */
     protected function modifyDefault(Blueprint $blueprint, Fluent $column)
     {
         if (!is_null($column->default)) {
-            return " default ".$this->getDefaultValue($column->default);
+            return " default " . $this->getDefaultValue($column->default);
         }
 
         return null;
@@ -720,32 +747,31 @@ class DB2Grammar extends Grammar
      * Get the SQL for an auto-increment column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string|null
      */
     protected function modifyIncrement(Blueprint $blueprint, Fluent $column)
     {
         if (in_array($column->type, $this->serials) && $column->autoIncrement) {
-            return ' as identity constraint '.$blueprint->getTable().'_'.$column->name.'_primary primary key';
+            return ' generated by default as identity constraint ' . $blueprint->getTable() . '_' . $column->name . '_primary primary key';
         }
 
         return null;
     }
 
-
     /**
      * Get the SQL for an "before" column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string|null
      */
     protected function modifyBefore(Blueprint $blueprint, Fluent $column)
     {
         if (!is_null($column->before)) {
-            return ' before '.$this->wrap($column->before);
+            return ' before ' . $this->wrap($column->before);
         }
 
         return null;
@@ -755,14 +781,14 @@ class DB2Grammar extends Grammar
      * Get the SQL for an "for column" column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string|null
      */
     protected function modifyForColumn(Blueprint $blueprint, Fluent $column)
     {
         if (!is_null($column->forColumn)) {
-            return ' for column '.$this->wrap($column->forColumn);
+            return ' for column ' . $this->wrap($column->forColumn);
         }
 
         return null;
@@ -772,14 +798,14 @@ class DB2Grammar extends Grammar
      * Get the SQL for a "generated" column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string|null
      */
     protected function modifyGenerated(Blueprint $blueprint, Fluent $column)
     {
         if (!is_null($column->generated)) {
-            return ' generated '.($column->generated === true ? 'always' : $this->wrap($column->generated));
+            return ' generated ' . ($column->generated === true ? 'always' : $this->wrap($column->generated));
         }
 
         return null;
@@ -789,14 +815,14 @@ class DB2Grammar extends Grammar
      * Get the SQL for a "startWith" column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string|null
      */
     protected function modifyStartWith(Blueprint $blueprint, Fluent $column)
     {
         if (!is_null($column->startWith)) {
-            return ' (start with '.$column->startWith.')';
+            return ' (start with ' . $column->startWith . ')';
         }
 
         return null;
@@ -806,7 +832,7 @@ class DB2Grammar extends Grammar
      * Get the SQL for an "implicitly hidden" column modifier.
      *
      * @param  \Illuminate\Database\Schema\Blueprint $blueprint
-     * @param  \Illuminate\Support\Fluent $column
+     * @param  \Illuminate\Support\Fluent            $column
      *
      * @return string|null
      */
@@ -828,14 +854,10 @@ class DB2Grammar extends Grammar
      */
     protected function getDefaultValue($value)
     {
-        if (
-            $value instanceof Expression
-            || is_bool($value)
-            || is_numeric($value)
-        ) {
+        if ($value instanceof Expression || is_bool($value) || is_numeric($value)) {
             return $value;
         }
 
-        return "'".strval($value)."'";
+        return "'" . strval($value) . "'";
     }
 }

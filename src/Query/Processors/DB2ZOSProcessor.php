@@ -28,7 +28,7 @@ class DB2ZOSProcessor extends Processor
         $sequenceStr = $sequence ?: 'id';
 
         if (is_array($sequence)) {
-            $grammar = new DB2Grammar();
+            $grammar = new DB2Grammar("z");
             $sequenceStr = $grammar->columnize($sequence);
         }
 

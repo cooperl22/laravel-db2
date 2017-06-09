@@ -17,14 +17,15 @@ class ODBCZOSConnector extends ODBCConnector
     protected function getDsn(array $config)
     {
         $dsnParts = [
-            'odbc:DRIVER={IBM DB2 ODBC DRIVER}',
+            "odbc:DRIVER=$driverName",
             'Database=%s',
             'Hostname=%s',
             'Port=%s',
             'Protocol=TCPIP',
             'Uid=%s',
             'Pwd=%s',
-            '', // Just to add a semicolon to the end of string
+            '',
+            // Just to add a semicolon to the end of string
         ];
 
         $dsnConfig = [

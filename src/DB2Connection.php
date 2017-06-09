@@ -101,7 +101,7 @@ class DB2Connection extends Connection
      */
     protected function getDefaultSchemaGrammar()
     {
-        return $this->withTablePrefix(new SchemaGrammar());
+        return $this->withTablePrefix(new SchemaGrammar($this->config['driver'] == "odbc"?"i":"c"));
     }
 
     /**
@@ -115,6 +115,6 @@ class DB2Connection extends Connection
             return new DB2ZOSProcessor();
         }
 
-        return new DB2Processor();
+        return new DB2Processor($this->config['driver'] == "odbc"?"i":"c");
     }
 }
