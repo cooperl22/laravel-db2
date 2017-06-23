@@ -28,6 +28,9 @@ class DB2ServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->publishes([
+            __DIR__ . '/config/config.php' => config_path('db2.php'),
+        ]);
     }
 
     /**
@@ -38,7 +41,7 @@ class DB2ServiceProvider extends ServiceProvider
     public function register()
     {
         // get the configs
-        $conns = is_array(config('laravel-db2::database.connections')) ? config('laravel-db2::database.connections') : [];
+        $conns = is_array(config('db2.connections')) ? config('db2.connections') : [];
 
         // Add my database configurations to the default set of configurations
         config(['database.connections' => array_merge($conns, config('database.connections'))]);
@@ -46,26 +49,31 @@ class DB2ServiceProvider extends ServiceProvider
         // Extend the connections with pdo_odbc and pdo_ibm drivers
         foreach (config('database.connections') as $conn => $config) {
             // Only use configurations that feature a "odbc", "ibm" or "odbczos" driver
-            if (!isset($config['driver']) || !in_array($config['driver'], ['odbc', 'ibm', 'odbczos', 'odbcexpress'])) {
+            if (!isset($config['driver']) || !in_array($config['driver'], [
+                    'db2_ibmi_odbc',
+                    'db2_ibmi_ibm',
+                    'db2_zos_odbc',
+                    'db2_expressc_odbc',
+                ])
+            ) {
                 continue;
             }
 
             // Create a connector
-            $this->app['db']->extend($conn, function ($config) {
+            $this->app['db']->extend($conn, function($config) {
                 switch ($config['driver']) {
-                    case 'odbcexpress':
-                    case 'odbc':
+                    case 'db2_expressc_odbc':
+                    case 'db2_ibmi_odbc':
                         $connector = new ODBCConnector();
-
                         break;
-                    case 'odbczos':
+
+                    case 'db2_zos_odbc':
                         $connector = new ODBCZOSConnector();
-
                         break;
-                    case 'ibm':
+
+                    case 'db2_ibmi_ibm':
                     default:
                         $connector = new IBMConnector();
-
                         break;
                 }
 

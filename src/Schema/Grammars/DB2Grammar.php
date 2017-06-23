@@ -70,11 +70,7 @@ class DB2Grammar extends Grammar
      */
     public function compileTableExists()
     {
-        if ($this->dbType == "i") {
-            return 'select * from information_schema.tables where table_schema = upper(?) and table_name = upper(?)';
-        } else {
-            return 'select * from syspublic.all_tables where table_schema = upper(?) and table_name = upper(?)';
-        }
+        return 'select * from information_schema.tables where table_schema = upper(?) and table_name = upper(?)';
     }
 
     /**
@@ -84,21 +80,7 @@ class DB2Grammar extends Grammar
      */
     public function compileColumnExists()
     {
-        if ($this->dbType == "i") {
-            return "
-            select  column_name 
-            from    information_schema.columns 
-            where   table_schema = upper(?) 
-            and     table_name = upper(?)
-        ";
-        } else {
-            return "
-            select  column_name 
-            from    syspublic.all_ind_columns 
-            where   table_schema = upper(?) 
-            and     table_name = upper(?)
-        ";
-        }
+        return 'select column_name from information_schema.columns where table_schema = upper(?) and table_name = upper(?)';
     }
 
     /**

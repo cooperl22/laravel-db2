@@ -13,44 +13,6 @@ use Cooperl\Database\DB2\Query\Grammars\DB2Grammar;
  */
 class DB2Processor extends Processor
 {
-
-    private $bdType;
-
-    /**
-     * DB2Processor constructor.
-     *
-     * @param $bdType
-     */
-    public function __construct($bdType)
-    {
-        $this->bdType = $bdType;
-    }
-    /**
-     * Process the results of a "select" query.
-     *
-     * @param  \Illuminate\Database\Query\Builder $query
-     * @param  array                              $results
-     *
-     * @return array
-     */
-    /*public function processSelect(Builder $query, $results)
-    {
-        $results = array_map(function($result) {
-            foreach (get_object_vars($result) as $field => $value) {
-                if (is_string($value))
-                {
-                    $result->$field = trim(preg_split('/[^\r\n\t\x20-\x7E\xA0-\xFF]/', $value)[0]);
-                }
-            }
-
-            return $result;
-        }, $results);
-
-        return $results;
-    }*/
-
-
-
     /**
      * Process an "insert get ID" query.
      *
@@ -66,14 +28,15 @@ class DB2Processor extends Processor
         $sequenceStr = $sequence ?: 'id';
 
         if (is_array($sequence)) {
-            $grammar = new DB2Grammar($this->bdType);
+            $grammar = new DB2Grammar;
             $sequenceStr = $grammar->columnize($sequence);
         }
 
-        $sql = 'select ' . $sequenceStr . ' from new table (' . $sql;
-        $sql .= ')';
+        $sqlStr = 'select %s from new table (%s)';
+
+        $finalSql = sprintf($sqlStr, $sequenceStr, $sql);
         $results = $query->getConnection()
-                         ->select($sql, $values);
+                         ->select($finalSql, $values);
 
         if (is_array($sequence)) {
             return array_values((array) $results[0]);

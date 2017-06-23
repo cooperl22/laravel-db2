@@ -13,6 +13,13 @@ use Illuminate\Database\Query\Builder;
 class DB2Grammar extends Grammar
 {
     /**
+     * The format for database stored dates.
+     *
+     * @var string
+     */
+    protected $dateFormat;
+
+    /**
      * Wrap a single string in keyword identifiers.
      *
      * @param string $value
@@ -32,7 +39,7 @@ class DB2Grammar extends Grammar
      * Compile the "limit" portions of the query.
      *
      * @param \Illuminate\Database\Query\Builder $query
-     * @param int $limit
+     * @param int                                $limit
      *
      * @return string
      */
@@ -70,7 +77,7 @@ class DB2Grammar extends Grammar
      * Create a full ANSI offset clause for the query.
      *
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array $components
+     * @param array                              $components
      *
      * @return string
      */
@@ -90,10 +97,10 @@ class DB2Grammar extends Grammar
         // the "select" that will give back the row numbers on each of the records.
         $orderings = $components['orders'];
 
-        $columns = (!empty($components['columns']) ? $components['columns'].', ' : 'select');
+        $columns = (!empty($components['columns']) ? $components['columns'] . ', ' : 'select');
 
         if ($columns == 'select *, ' && $query->from) {
-            $columns = 'select '.$this->tablePrefix.$query->from.'.*, ';
+            $columns = 'select ' . $this->tablePrefix . $query->from . '.*, ';
         }
 
         $components['columns'] = $this->compileOver($orderings, $columns);
@@ -119,7 +126,7 @@ class DB2Grammar extends Grammar
      * Compile the over statement for a table expression.
      *
      * @param string $orderings
-     * @param $columns
+     * @param        $columns
      *
      * @return string
      */
@@ -163,7 +170,7 @@ class DB2Grammar extends Grammar
      * Compile the "offset" portions of the query.
      *
      * @param \Illuminate\Database\Query\Builder $query
-     * @param int $offset
+     * @param int                                $offset
      *
      * @return string
      */
@@ -179,6 +186,16 @@ class DB2Grammar extends Grammar
      */
     public function getDateFormat()
     {
-        return 'Y-m-d H:i:s.u';
+        return $this->dateFormat ?? parent::getDateFormat();
+    }
+
+    /**
+     * Set the format for database stored dates.
+     *
+     * @param $dateFormat
+     */
+    public function setDateFormat($dateFormat)
+    {
+        $this->dateFormat = $dateFormat;
     }
 }

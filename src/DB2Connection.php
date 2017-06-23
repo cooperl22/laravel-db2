@@ -25,7 +25,6 @@ class DB2Connection extends Connection
      * @var string
      */
     protected $defaultSchema;
-
     /**
      * The name of the current schema in use.
      *
@@ -91,7 +90,13 @@ class DB2Connection extends Connection
      */
     protected function getDefaultQueryGrammar()
     {
-        return $this->withTablePrefix(new QueryGrammar());
+        $defaultGrammar = new QueryGrammar;
+
+        if (array_key_exists('date_format', $this->config)) {
+            $defaultGrammar->setDateFormat($this->config['date_format']);
+        }
+
+        return $this->withTablePrefix($defaultGrammar);
     }
 
     /**
@@ -101,7 +106,16 @@ class DB2Connection extends Connection
      */
     protected function getDefaultSchemaGrammar()
     {
-        return $this->withTablePrefix(new SchemaGrammar($this->config['driver'] == 'odbc' ? 'i' : 'c'));
+        switch ($this->config['driver']) {
+            case 'db2_expressc_odbc':
+                $defaultGrammar = $this->withTablePrefix(new DB2ExpressCGrammar);
+                break;
+            default:
+                $defaultGrammar = $this->withTablePrefix(new SchemaGrammar);
+                break;
+        }
+
+        return $defaultGrammar;
     }
 
     /**
@@ -111,10 +125,15 @@ class DB2Connection extends Connection
      */
     protected function getDefaultPostProcessor()
     {
-        if ($this->config['driver'] == 'odbczos') {
-            return new DB2ZOSProcessor();
+        switch ($this->config['driver']) {
+            case 'db2_zos_odbc':
+                $defaultProcessor = new DB2ZOSProcessor;
+                break;
+            default:
+                $defaultProcessor = new DB2Processor;
+                break;
         }
 
-        return new DB2Processor($this->config['driver'] == 'odbc' ? 'i' : 'c');
+        return $defaultProcessor;
     }
 }

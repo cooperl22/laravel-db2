@@ -2,37 +2,13 @@
 
 namespace Cooperl\Database\DB2\Connectors;
 
-use Illuminate\Database\Connectors\Connector;
-use Illuminate\Database\Connectors\ConnectorInterface;
-
 /**
  * Class ODBCConnector
  *
  * @package Cooperl\Database\DB2\Connectors
  */
-class ODBCConnector extends Connector implements ConnectorInterface
+class ODBCConnector extends DB2Connector
 {
-
-    /**
-     * @param array $config
-     *
-     * @return \PDO
-     */
-    public function connect(array $config)
-    {
-        $dsn = $this->getDsn($config);
-        $options = $this->getOptions($config);
-        $connection = $this->createConnection($dsn, $config, $options);
-
-        if (isset($config['schema'])) {
-            $schema = $config['schema'];
-
-            $connection->prepare('set schema '.$schema)->execute();
-        }
-
-        return $connection;
-    }
-
     /**
      * @param array $config
      *
@@ -40,73 +16,33 @@ class ODBCConnector extends Connector implements ConnectorInterface
      */
     protected function getDsn(array $config)
     {
-        extract($config);
+        $dsnParts = [
+            'odbc:DRIVER=%s',
+            'System=%s',
+            'Database=%s',
+            'UserID=%s',
+            'Password=%s',
+        ];
 
-        $dsn = "odbc:"
-             // General settings
-             . "DRIVER=$driverName;"
-             . "SYSTEM=$host;"
-             . "UserID=$username;"
-             . "Password=$password;"
-             //Server settings
-             . "DATABASE=$database;"
-             . "SIGNON=$signon;"
-             . "SSL=$ssl;"
-             . "CommitMode=$commitMode;"
-             . "ConnectionType=$connectionType;"
-             . "DefaultLibraries=$defaultLibraries;"
-             . "Naming=$naming;"
-             . "UNICODESQL=$unicodeSql;"
-             // Format settings
-             . "DateFormat=$dateFormat;"
-             . "DateSeperator=$dateSeperator;"
-             . "Decimal=$decimal;"
-             . "TimeFormat=$timeFormat;"
-             . "TimeSeparator=$timeSeparator;"
-             // Performances settings
-             . "BLOCKFETCH=$blockFetch;"
-             . "BlockSizeKB=$blockSizeKB;"
-             . "AllowDataCompression=$allowDataCompression;"
-             . "CONCURRENCY=$concurrency;"
-             . "LAZYCLOSE=$lazyClose;"
-             . "MaxFieldLength=$maxFieldLength;"
-             . "PREFETCH=$prefetch;"
-             . "QUERYTIMEOUT=$queryTimeout;"
-             // Modules settings
-             . "DefaultPkgLibrary=$defaultPkgLibrary;"
-             . "DefaultPackage=$defaultPackage;"
-             . "ExtendedDynamic=$extendedDynamic;"
-             // Diagnostic settings
-             . "QAQQINILibrary=$QAQQINILibrary;"
-             . "SQDIAGCODE=$sqDiagCode;"
-             // Sort settings
-             . "LANGUAGEID=$languageId;"
-             . "SORTTABLE=$sortTable;"
-             . "SortSequence=$sortSequence;"
-             . "SORTWEIGHT=$sortWeight;"
-             // Conversion settings
-             . "AllowUnsupportedChar=$allowUnsupportedChar;"
-             . "CCSID=$ccsid;"
-             . "GRAPHIC=$graphic;"
-             . "ForceTranslation=$forceTranslation;"
-             // Other settings
-             . "ALLOWPROCCALLS=$allowProcCalls;"
-             . "DB2SQLSTATES=$DB2SqlStates;"
-             . "DEBUG=$debug;"
-             . "TRUEAUTOCOMMIT=$trueAutoCommit;"
-             . "CATALOGOPTIONS=$catalogOptions;"
-             . "LibraryView=$libraryView;"
-             . "ODBCRemarks=$ODBCRemarks;"
-             . "SEARCHPATTERN=$searchPattern;"
-             . "TranslationDLL=$translationDLL;"
-             . "TranslationOption=$translationOption;"
-             . "MAXTRACESIZE=$maxTraceSize;"
-             . "MultipleTraceFiles=$multipleTraceFiles;"
-             . "TRACE=$trace;"
-             . "TRACEFILENAME=$traceFilename;"
-             . "ExtendedColInfo=$extendedColInfo;"
-             ;
+        $dsnConfig = [
+            $config['driverName'],
+            $config['host'],
+            $config['database'],
+            $config['username'],
+            $config['password'],
+        ];
 
-        return $dsn;
+        if (array_key_exists('odbc_keywords', $config)) {
+            $odbcKeywords = $config['odbc_keywords'];
+            $parts = array_map(function($part) {
+                return $part . '=%s';
+            }, array_keys($odbcKeywords));
+            $config = array_values($odbcKeywords);
+
+            $dsnParts = array_merge($dsnParts, $parts);
+            $dsnConfig = array_merge($dsnConfig, $config);
+        }
+
+        return sprintf(implode(';', $dsnParts), ...$dsnConfig);
     }
 }

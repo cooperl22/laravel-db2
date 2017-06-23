@@ -17,9 +17,9 @@ class DB2ZOSProcessor extends Processor
      * Process an "insert get ID" query.
      *
      * @param  \Illuminate\Database\Query\Builder $query
-     * @param  string $sql
-     * @param  array $values
-     * @param  string $sequence
+     * @param  string                             $sql
+     * @param  array                              $values
+     * @param  string                             $sequence
      *
      * @return int/array
      */
@@ -28,14 +28,15 @@ class DB2ZOSProcessor extends Processor
         $sequenceStr = $sequence ?: 'id';
 
         if (is_array($sequence)) {
-            $grammar = new DB2Grammar("z");
+            $grammar = new DB2Grammar;
             $sequenceStr = $grammar->columnize($sequence);
         }
 
         $sqlStr = 'select %s from final table (%s)';
 
         $finalSql = sprintf($sqlStr, $sequenceStr, $sql);
-        $results = $query->getConnection()->select($finalSql, $values);
+        $results = $query->getConnection()
+                         ->select($finalSql, $values);
 
         if (is_array($sequence)) {
             return array_values((array) $results[0]);
