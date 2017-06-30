@@ -10,7 +10,6 @@ use Illuminate\Database\Schema\Blueprint;
 
 class DB2Grammar extends Grammar
 {
-    private $dbType;
     /**
      * The possible column modifiers.
      *
@@ -36,16 +35,6 @@ class DB2Grammar extends Grammar
         'integer',
         'bigInteger',
     ];
-
-    /**
-     * DB2Grammar constructor.
-     *
-     * @param $dbType
-     */
-    public function __construct($dbType)
-    {
-        $this->dbType = $dbType;
-    }
 
     /**
      * Wrap a single string in keyword identifiers.
