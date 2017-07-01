@@ -61,6 +61,7 @@ Simply add this code at the end of your ``app/config/database.php`` file:
     */
 
     'ibmi' => [
+        'name' => 'ibmi',
         'driver' => 'db2_ibmi_odbc',
         // or 'db2_ibmi_ibm' / 'db2_zos_odbc' / 'db2_expressc_odbc
         'driverName' => '{IBM i Access ODBC Driver}',
