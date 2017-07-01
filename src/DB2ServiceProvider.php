@@ -60,7 +60,8 @@ class DB2ServiceProvider extends ServiceProvider
             }
 
             // Create a connector
-            $this->app['db']->extend($conn, function($config) {
+            $this->app['db']->extend($conn, function($config, $name) {
+                $config['name'] = $name;
                 switch ($config['driver']) {
                     case 'db2_expressc_odbc':
                     case 'db2_ibmi_odbc':
