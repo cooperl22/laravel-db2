@@ -49,6 +49,10 @@ Please check appropriate specific DSN parameters for your connection.
 For instance here are the ODBC keywords for IBMi 
 https://www.ibm.com/support/knowledgecenter/fr/ssw_ibm_i_73/rzaik/connectkeywords.htm
 
+If you encounter issues with char fields containing characters outside the invariant character set (for example: "ü") please see : https://www.ibm.com/developerworks/community/forums/html/topic?id=77777777-0000-0000-0000-000014094907
+For PHP applications using the UTF8 locale the workaround to prevent the extra garbage data is to set the following connection string keyword:
+DEBUG = 65536
+
 #### Option 1: Configure DB2 using ``app/config/database.php`` file
 
 Simply add this code at the end of your ``app/config/database.php`` file:
