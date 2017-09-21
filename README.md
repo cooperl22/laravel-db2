@@ -1,5 +1,4 @@
 # laravel-db2
-
 [![Latest Stable Version](https://poser.pugx.org/cooperl/laravel-db2/v/stable)](https://packagist.org/packages/cooperl/laravel-db2)
 [![Total Downloads](https://poser.pugx.org/cooperl/laravel-db2/downloads)](https://packagist.org/packages/cooperl/laravel-db2)
 [![Latest Unstable Version](https://poser.pugx.org/cooperl/laravel-db2/v/unstable)](https://packagist.org/packages/cooperl/laravel-db2)
@@ -11,38 +10,22 @@ It provides DB2 Connection by extending the Illuminate Database component of the
 ---
 
 - [Installation](#installation)
-- [Registering the Package](#registering-the-package)
 - [Configuration](#configuration)
 - [Usage](#usage)
 
 ## Installation
-
 Add laravel-db2 to your composer.json file:
-
 ```
 "require": {
     "cooperl/laravel-db2": "~5.4"
 }
 ```
-
 Use [composer](http://getcomposer.org) to install this package.
-
 ```
 $ composer update
 ```
 
-### Registering the Package
-
-Add the laravel-db2 Service Provider to your config in ``app/config/app.php``:
-
-```php
-'providers' => [
-    'Cooperl\Database\DB2\DB2ServiceProvider'
-],
-```
-
 ### Configuration
-
 There are two ways to configure laravel-db2. You can choose the most convenient way for you. You can put your DB2 credentials into ``app/config/database.php`` (option 1) file or use package config file which you can generate through command line by artisan (option 2).
 
 Please check appropriate specific DSN parameters for your connection.
@@ -54,7 +37,6 @@ For PHP applications using the UTF8 locale the workaround to prevent the extra g
 DEBUG = 65536
 
 #### Option 1: Configure DB2 using ``app/config/database.php`` file
-
 Simply add this code at the end of your ``app/config/database.php`` file:
 
 ```php
