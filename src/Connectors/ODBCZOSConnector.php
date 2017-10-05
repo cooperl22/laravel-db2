@@ -17,7 +17,7 @@ class ODBCZOSConnector extends ODBCConnector
     protected function getDsn(array $config)
     {
         $dsnParts = [
-            "odbc:DRIVER=$driverName",
+            'odbc:DRIVER=%s',
             'Database=%s',
             'Hostname=%s',
             'Port=%s',
@@ -28,6 +28,7 @@ class ODBCZOSConnector extends ODBCConnector
         ];
 
         $dsnConfig = [
+            $config['driverName'],
             $config['database'],
             $config['host'],
             $config['port'],
