@@ -180,6 +180,21 @@ class DB2Grammar extends Grammar
     }
 
     /**
+     * Compile an exists statement into SQL.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @return string
+     */
+    public function compileExists(Builder $query)
+    {
+        $existsQuery = clone $query;
+
+        $existsQuery->columns = [];
+
+        return $this->compileSelect($existsQuery->selectRaw('1')->limit(1));
+    }
+
+    /**
      * Get the format for database stored dates.
      *
      * @return string
