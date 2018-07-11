@@ -17,7 +17,7 @@ It provides DB2 Connection by extending the Illuminate Database component of the
 Add laravel-db2 to your composer.json file:
 ```
 "require": {
-    "cooperl/laravel-db2": "~5.4"
+    "cooperl/laravel-db2": "~5.5"
 }
 ```
 Use [composer](http://getcomposer.org) to install this package.
@@ -29,7 +29,7 @@ $ composer update
 There are two ways to configure laravel-db2. You can choose the most convenient way for you. You can put your DB2 credentials into ``app/config/database.php`` (option 1) file or use package config file which you can generate through command line by artisan (option 2).
 
 Please check appropriate specific DSN parameters for your connection.
-For instance here are the ODBC keywords for IBMi 
+For instance here are the ODBC keywords for IBMi
 https://www.ibm.com/support/knowledgecenter/fr/ssw_ibm_i_73/rzaik/connectkeywords.htm
 
 If you encounter issues with char fields containing characters outside the invariant character set (for example: "ü") please see : https://www.ibm.com/developerworks/community/forums/html/topic?id=77777777-0000-0000-0000-000014094907
@@ -123,7 +123,7 @@ Simply add this code at the end of your ``app/config/database.php`` file:
         ]
     ],
 
-```           
+```
 driver setting can be:
 - 'db2_ibmi_odbc' for IBMi ODBC connection
 - 'db2_ibmi_ibm' for IBMi PDO_IBM connection
