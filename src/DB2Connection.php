@@ -36,11 +36,7 @@ class DB2Connection extends Connection
     {
         parent::__construct($pdo, $database, $tablePrefix, $config);
         
-        if(isset($config['schema']) && $config['schema'])
-        {
-            $this->currentSchema = $this->defaultSchema = strtoupper($config['schema']);
-        }
-        
+        $this->currentSchema = $this->defaultSchema = strtoupper($config['schema'] ?? null);
     }
 
     /**
