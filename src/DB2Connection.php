@@ -35,7 +35,7 @@ class DB2Connection extends Connection
     public function __construct(PDO $pdo, $database = '', $tablePrefix = '', array $config = [])
     {
         parent::__construct($pdo, $database, $tablePrefix, $config);
-        $this->currentSchema = $this->defaultSchema = strtoupper($config['schema']);
+        $this->currentSchema = $this->defaultSchema = strtoupper($config['schema'] ?? null);
     }
 
     /**
