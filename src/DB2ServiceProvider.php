@@ -2,6 +2,8 @@
 
 namespace Cooperl\Database\DB2;
 
+use Illuminate\Foundation\Application as LaravelApplication;
+use Laravel\Lumen\Application as LumenApplication;
 use Cooperl\Database\DB2\Connectors\ODBCConnector;
 use Cooperl\Database\DB2\Connectors\IBMConnector;
 use Cooperl\Database\DB2\Connectors\ODBCZOSConnector;
@@ -28,9 +30,8 @@ class DB2ServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->publishes([
-            __DIR__ . '/config/config.php' => config_path('db2.php'),
-        ]);
+        $configPath = __DIR__ . '/config/db2.php';
+        $this->publishes([$configPath => $this->getConfigPath()], 'config');
     }
 
     /**
@@ -82,6 +83,20 @@ class DB2ServiceProvider extends ServiceProvider
 
                 return new DB2Connection($db2Connection, $config["database"], $config["prefix"], $config);
             });
+        }
+    }
+
+    /**
+     * Get the config path
+     *
+     * @return string
+     */
+    protected function getConfigPath()
+    {
+        if ($this->app instanceof LaravelApplication) {
+            return config_path('db2.php');
+        } elseif ($this->app instanceof LumenApplication) {
+            return base_path('config/db2.php');
         }
     }
 
