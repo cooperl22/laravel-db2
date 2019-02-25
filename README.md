@@ -1,11 +1,12 @@
 # laravel-db2
-[![Latest Stable Version](https://poser.pugx.org/cooperl/laravel-db2/v/stable)](https://packagist.org/packages/cooperl/laravel-db2)
-[![Total Downloads](https://poser.pugx.org/cooperl/laravel-db2/downloads)](https://packagist.org/packages/cooperl/laravel-db2)
-[![Latest Unstable Version](https://poser.pugx.org/cooperl/laravel-db2/v/unstable)](https://packagist.org/packages/cooperl/laravel-db2)
-[![License](https://poser.pugx.org/cooperl/laravel-db2/license)](https://packagist.org/packages/cooperl/laravel-db2)
 
 laravel-db2 is a simple DB2 service provider for Laravel.
 It provides DB2 Connection by extending the Illuminate Database component of the laravel framework.
+
+## This is a fork of [cooperl22's laravel-db2](https://www.github.com/cooperl22/laravel-db2)
+
+## Fork Detail
+DSN has been modified to connect using a connection string, learn more in [PHP/PDO](http://php.net/manual/es/ref.pdo-ibm.connection.php)
 
 ---
 
@@ -17,7 +18,7 @@ It provides DB2 Connection by extending the Illuminate Database component of the
 Add laravel-db2 to your composer.json file:
 ```
 "require": {
-    "cooperl/laravel-db2": "~5.7"
+    "manuelmousett/laravel-db2": "~1.0"
 }
 ```
 Use [composer](http://getcomposer.org) to install this package.
