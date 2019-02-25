@@ -18,7 +18,7 @@ DSN has been modified to connect using a connection string, learn more in [PHP/P
 Add laravel-db2 to your composer.json file:
 ```
 "require": {
-    "manuelmousett/laravel-db2": "~5.7"
+    "mmousett/laravel-db2": "~5.7"
 }
 ```
 Use [composer](http://getcomposer.org) to install this package.
