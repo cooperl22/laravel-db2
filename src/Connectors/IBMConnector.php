@@ -16,7 +16,8 @@ class IBMConnector extends DB2Connector
      */
     protected function getDsn(array $config)
     {
-        $dsn = "ibm:{$config['database']}";
+      
+        $dsn = "ibm:DRIVER={$config['driverName']};DATABASE={$config['database']};HOSTNAME={$config['host']};PORT={$config['port']};PROTOCOL=TCPIP;";
 
         return $dsn;
     }
