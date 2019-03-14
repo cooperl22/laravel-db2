@@ -104,6 +104,13 @@ class DB2Grammar extends Grammar
         }
 
         $components['columns'] = $this->compileOver($orderings, $columns);
+        
+        // if there are bindings in the order, we need to move them to the select since we are moving the parameter
+        // markers there with the OVER statement
+        if(isset($query->getRawBindings()['order'])){
+            $query->addBinding($query->getRawBindings()['order'], 'select');
+            $query->setBindings([], 'order');
+        }
 
         unset($components['orders']);
 
