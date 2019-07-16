@@ -2,6 +2,9 @@
 
 namespace Cooperl\Database\DB2\Schema;
 
+use Illuminate\Database\Connection;
+use Illuminate\Database\Schema\Grammars\Grammar;
+
 /**
  * Class Blueprint
  *
@@ -10,27 +13,62 @@ namespace Cooperl\Database\DB2\Schema;
 class Blueprint extends \Illuminate\Database\Schema\Blueprint
 {
 
-    public function synchro($index, $masterizable = false)
+   /**
+     * The sequence number of reply list entries.
+     *
+     * @var int
+     */
+    private $replyListSequenceNumber;
+
+    /**
+     * Get the sequence number of reply list entries.
+     *
+     * @return int
+     */
+    public function getReplyListSequenceNumber()
     {
-
-        $this->string('id_sync', 20)
-             ->index($index);
-        $this->string('hashcode', 32);
-
-        if (true === $masterizable) {
-            $this->boolean('data_master')
-                 ->default(true);
-        }
+        return $this->replyListSequenceNumber;
     }
 
     /**
-     * @param string $index
+     * Set the sequence number of reply list entries.
+     *
+     * @param int $replyListSequenceNumber
+     * @return void
      */
-    public function dropSynchro($index)
+    public function setReplyListSequenceNumber(int $replyListSequenceNumber)
     {
-        $this->dropColumn('id_sync', 'hashcode');
-        $this->dropIndex($index);
+        return $this->replyListSequenceNumber = $replyListSequenceNumber;
     }
+
+    /**
+     * Get the raw SQL statements for the blueprint.
+     *
+     * @param  \Illuminate\Database\Connection  $connection
+     * @param  \Illuminate\Database\Schema\Grammars\Grammar  $grammar
+     * @return array
+     */
+    public function toSql(Connection $connection, Grammar $grammar)
+    {
+        $this->addReplyListEntryCommands($connection);
+
+        return parent::toSql($connection, $grammar);
+    }
+
+    /**
+     * Add the commands that are necessary to DROP and Rename statements on IBMi.
+     *
+     * @param  \Illuminate\Database\Connection  $connection
+     * @return void
+     */
+    protected function addReplyListEntryCommands(Connection $connection)
+    {
+        if ($this->commandsNamed(['dropColumn', 'renameColumn'])->count() > 0) {
+            array_unshift($this->commands, $this->createCommand('addReplyListEntry'), $this->createCommand('changeJob'));
+            array_push($this->commands, $this->createCommand('removeReplyListEntry'));
+        }
+    }
+
     /**
      * Specify a system name for the table.
      *
@@ -123,5 +161,27 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     public function numeric($column, $total = 8, $places = 2)
     {
         return $this->addColumn('numeric', $column, compact('total', 'places'));
+    }
+
+    public function synchro($index, $masterizable = false)
+    {
+
+        $this->string('id_sync', 20)
+             ->index($index);
+        $this->string('hashcode', 32);
+
+        if (true === $masterizable) {
+            $this->boolean('data_master')
+                 ->default(true);
+        }
+    }
+
+    /**
+     * @param string $index
+     */
+    public function dropSynchro($index)
+    {
+        $this->dropColumn('id_sync', 'hashcode');
+        $this->dropIndex($index);
     }
 }

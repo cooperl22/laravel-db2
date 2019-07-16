@@ -831,4 +831,83 @@ class DB2Grammar extends Grammar
 
         return "'" . strval($value) . "'";
     }
+
+    /**
+     * Compile a executeCommand command.
+     *
+     * @param  \Illuminate\Database\Schema\Blueprint $blueprint
+     * @param  \Illuminate\Support\Fluent            $command
+     *
+     * @return string
+     */
+    private function compileExecuteCommand(Blueprint $blueprint, Fluent $command)
+    {
+        return "CALL QSYS2.QCMDEXC('" . $command->command . "')";
+    }
+
+    /**
+     * Compile an addReplyListEntry command.
+     *
+     * @param  \Illuminate\Database\Schema\Blueprint $blueprint
+     * @param  \Illuminate\Support\Fluent            $command
+     * @param  \Illuminate\Database\Connection  $connection
+     *
+     * @return string
+     */
+    public function compileAddReplyListEntry(Blueprint $blueprint, Fluent $command, Connection $connection)
+    {
+        $sequenceNumberQuery = <<<EOT
+            with reply_list_info(sequence_number) as (
+                values(1)
+                union all
+                select sequence_number + 1
+                from reply_list_info
+                where sequence_number + 1 between 2 and 9999
+            )
+            select min(sequence_number) sequence_number
+            from reply_list_info
+            where not exists (
+                select 1
+                from qsys2.reply_list_info rli
+                where rli.sequence_number = reply_list_info.sequence_number
+            )
+EOT;
+
+        $blueprint->setReplyListSequenceNumber($sequenceNumber = $connection->selectOne($sequenceNumberQuery)->sequence_number);
+        $command->command = "ADDRPYLE SEQNBR($sequenceNumber) MSGID(CPA32B2) RPY(''I'')";
+
+        return $this->compileExecuteCommand($blueprint, $command);
+    }
+
+    /**
+     * Compile a removeReplyListEntry command.
+     *
+     * @param  \Illuminate\Database\Schema\Blueprint $blueprint
+     * @param  \Illuminate\Support\Fluent            $command
+     *
+     * @return string
+     */
+    public function compileRemoveReplyListEntry(Blueprint $blueprint, Fluent $command)
+    {
+        $sequenceNumber = $blueprint->getReplyListSequenceNumber();
+        $command->command = "RMVRPYLE SEQNBR($sequenceNumber)";
+
+        return $this->compileExecuteCommand($blueprint, $command);
+    }
+
+    /**
+     * Compile a changeJob command.
+     *
+     * @param  \Illuminate\Database\Schema\Blueprint $blueprint
+     * @param  \Illuminate\Support\Fluent            $command
+     *
+     * @return string
+     */
+    public function compileChangeJob(Blueprint $blueprint, Fluent $command)
+    {
+        $command->command = 'CHGJOB INQMSGRPY(*SYSRPYL)';
+
+        return $this->compileExecuteCommand($blueprint, $command);
+    }
+
 }
