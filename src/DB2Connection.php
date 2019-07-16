@@ -2,15 +2,16 @@
 
 namespace Cooperl\Database\DB2;
 
-use Cooperl\Database\DB2\Query\Processors\DB2ZOSProcessor;
 use PDO;
 
 use Illuminate\Database\Connection;
 
 use Cooperl\Database\DB2\Schema\Builder;
 use Cooperl\Database\DB2\Query\Processors\DB2Processor;
+use Cooperl\Database\DB2\Query\Processors\DB2ZOSProcessor;
 use Cooperl\Database\DB2\Query\Grammars\DB2Grammar as QueryGrammar;
 use Cooperl\Database\DB2\Schema\Grammars\DB2Grammar as SchemaGrammar;
+use Cooperl\Database\DB2\Schema\Grammars\DB2ExpressCGrammar;
 
 /**
  * Class DB2Connection
@@ -67,14 +68,25 @@ class DB2Connection extends Connection
      */
     public function setCurrentSchema($schema)
     {
-        //$this->currentSchema = $schema;
         $this->statement('SET SCHEMA ?', [strtoupper($schema)]);
+    }
+
+    /**
+     * Execute a system command on IBMi.
+     *
+     * @param $command
+     *
+     * @return string
+     */
+    public function executeCommand($command)
+    {
+        $this->statement('CALL QSYS2.QCMDEXC(?)', [$command]);
     }
 
     /**
      * Get a schema builder instance for the connection.
      *
-     * @return \Illuminate\Database\Schema\MySqlBuilder
+     * @return \Cooperl\Database\DB2\Schema\Builder
      */
     public function getSchemaBuilder()
     {
@@ -121,7 +133,7 @@ class DB2Connection extends Connection
     /**
      * Get the default post processor instance.
      *
-     * @return \Illuminate\Database\Query\Processors\PostgresProcessor
+     * @return \Cooperl\Database\DB2\Query\Processors\DB2Processor|\Cooperl\Database\DB2\Query\Processors\DB2ZOSProcessor
      */
     protected function getDefaultPostProcessor()
     {
