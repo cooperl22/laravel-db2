@@ -70,6 +70,19 @@ class Blueprint extends \Illuminate\Database\Schema\Blueprint
     }
 
     /**
+     * Get all of the commands matching the given names.
+     *
+     * @param  array  $names
+     * @return \Illuminate\Support\Collection
+     */
+    protected function commandsNamed(array $names)
+    {
+        return collect($this->commands)->filter(function ($command) use ($names) {
+            return in_array($command->name, $names);
+        });
+    }
+
+    /**
      * Specify a system name for the table.
      *
      * @param  string $systemName
