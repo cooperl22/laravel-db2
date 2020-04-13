@@ -17,10 +17,10 @@ It provides DB2 Connection by extending the Illuminate Database component of the
 Add laravel-db2 to your composer.json file:
 ```
 "require": {
-    "cooperl/laravel-db2": "~5.7"
+    "cooperl/laravel-db2": "^6.0"
 }
 ```
-Use [composer](http://getcomposer.org) to install this package.
+Use [composer](https://getcomposer.org) to install this package.
 ```
 $ composer update
 ```
@@ -30,7 +30,7 @@ There are two ways to configure laravel-db2. You can choose the most convenient 
 
 Please check appropriate specific DSN parameters for your connection.
 For instance here are the ODBC keywords for IBMi
-https://www.ibm.com/support/knowledgecenter/fr/ssw_ibm_i_73/rzaik/connectkeywords.htm
+https://www.ibm.com/support/knowledgecenter/fr/ssw_ibm_i_74/rzaik/connectkeywords.htm
 
 If you encounter issues with char fields containing characters outside the invariant character set (for example: "ü") please see : https://www.ibm.com/developerworks/community/forums/html/topic?id=77777777-0000-0000-0000-000014094907
 For PHP applications using the UTF8 locale the workaround to prevent the extra garbage data is to set the following connection string keyword:
@@ -146,4 +146,4 @@ the same way as above
 
 ## Usage
 
-Consult the [Laravel framework documentation](http://laravel.com/docs).
+Consult the [Laravel framework documentation](https://laravel.com/docs).
