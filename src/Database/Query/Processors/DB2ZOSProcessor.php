@@ -1,15 +1,15 @@
 <?php
 
-namespace Cooperl\Database\DB2\Query\Processors;
+namespace Cooperl\DB2\Database\Query\Processors;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Processors\Processor;
-use Cooperl\Database\DB2\Query\Grammars\DB2Grammar;
+use Cooperl\DB2\Database\Query\Grammars\DB2Grammar;
 
 /**
  * Class DB2ZOSProcessor
  *
- * @package Cooperl\Database\DB2\Query\Processors
+ * @package Cooperl\DB2\Database\Query\Processors
  */
 class DB2ZOSProcessor extends Processor
 {

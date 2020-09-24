@@ -1,12 +1,6 @@
 <?php
 
-namespace Cooperl\Database\DB2\Schema\Grammars;
-
-use Illuminate\Database\Query\Expression;
-use Illuminate\Support\Fluent;
-use Illuminate\Database\Connection;
-use Illuminate\Database\Schema\Grammars\Grammar;
-use Illuminate\Database\Schema\Blueprint;
+namespace Cooperl\DB2\Database\Schema\Grammars;
 
 class DB2ExpressCGrammar extends DB2Grammar
 {

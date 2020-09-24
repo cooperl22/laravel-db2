@@ -23,13 +23,13 @@
     },
     "autoload": {
     "psr-4": {
-        "Cooperl\\Database\\DB2\\": "src/"
+        "Cooperl\\DB2\\": "src/"
     }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Cooperl\\Database\\DB2\\DB2ServiceProvider"
+                "Cooperl\\DB2\\DB2ServiceProvider"
             ]
         }
     }
