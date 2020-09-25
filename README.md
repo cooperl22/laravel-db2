@@ -143,7 +143,7 @@ Set your laravel-db2 credentials in ``config/db2.php``
 the same way as above
 
 ### Queue Configuration
-Simply set database connection driver value to ``'db2_odbc'`` in ``config/database.php`` file:
+Simply set database connection driver value to ``'db2_odbc'`` in ``config/queue.php`` file:
 
 
 ## Usage
