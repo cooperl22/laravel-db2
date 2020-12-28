@@ -57,71 +57,79 @@ class DB2Grammar extends Grammar
      */
     public function compileSelect(Builder $query)
     {
+        if ($query->unions && $query->aggregate) {
+            return $this->compileUnionAggregate($query);
+        }
+
+        // If the query does not have any columns set, we'll set the columns to the
+        // * character to just get all of the columns from the database. Then we
+        // can build the query and concatenate all the pieces together as one.
+        $original = $query->columns;
+
         if (is_null($query->columns)) {
             $query->columns = ['*'];
         }
 
         $components = $this->compileComponents($query);
 
+        // limit must be handled by wrapWithOffset if an offset is present
+        if($query->offset > 0 || $query->unionOffset > 0){
+            unset($components['limit']);
+        }
+
         // If an offset is present on the query, we will need to wrap the query in
         // a big "ANSI" offset syntax block. This is very nasty compared to the
         // other database systems but is necessary for implementing features.
-        if ($query->offset > 0) {
-            return $this->compileAnsiOffset($query, $components);
+        $sql = $this->concatenate($components);
+
+        if ($query->unions) {
+            $sql = $this->wrapUnion($sql).' '.$this->compileUnions($query);
         }
 
-        return $this->concatenate($components);
+        if ($query->offset > 0 || $query->unionOffset > 0){
+            $sql = $this->wrapWithOffset($query, $sql, $query->orders, $query->offset);
+        }
+
+        $query->columns = $original;
+
+        return $sql;
     }
 
     /**
-     * Create a full ANSI offset clause for the query.
+     * If an offset is present on the query, we will need to wrap the query in
+     * a big "ANSI" offset syntax block. This is very nasty compared to the
+     * other database systems but is necessary for implementing features.
      *
      * @param \Illuminate\Database\Query\Builder $query
-     * @param array                              $components
+     * @param string $sql
      *
      * @return string
      */
-    protected function compileAnsiOffset(Builder $query, $components)
+    protected function wrapWithOffset(Builder $query, $sql)
     {
-        // An ORDER BY clause is required to make this offset query work, so if one does
-        // not exist we'll just create a dummy clause to trick the database and so it
-        // does not complain about the queries for not having an "order by" clause.
-        if (!isset($components['orders'])) {
-            $components['orders'] = 'order by 1';
-        }
+        $orders = $query->unionOrders ?? $query->orders;
+        $offset = $query->unionOffset ?? $query->offset;
 
-        unset($components['limit']);
+        // need to gather order details frome the query
+        $orderings = $this->compileOrders($query, $orders);
 
-        // We need to add the row number to the query so we can compare it to the offset
-        // and limit values given for the statements. So we will add an expression to
-        // the "select" that will give back the row numbers on each of the records.
-        $orderings = $components['orders'];
-
-        $columns = (!empty($components['columns']) ? $components['columns'] . ', ' : 'select');
-
-        if ($columns == 'select *, ' && $query->from) {
-            $columns = 'select ' . $this->tablePrefix . $query->from . '.*, ';
-        }
-
-        $components['columns'] = $this->compileOver($orderings, $columns);
-
-        // if there are bindings in the order, we need to move them to the select since we are moving the parameter
+        // if there are bindings in the order, we need to copy them to the select since we are copying the parameter
         // markers there with the OVER statement
         if(isset($query->getRawBindings()['order'])){
             $query->addBinding($query->getRawBindings()['order'], 'select');
-            $query->setBindings([], 'order');
         }
 
-        unset($components['orders']);
+        // offset will wrap the query in a temp name 'offset_query', we should select everything from it
+        $columns = $this->compileOver($orderings, 'offset_table.*, ');
 
         // Next we need to calculate the constraints that should be placed on the query
         // to get the right offset and limit from our query but if there is no limit
         // set we will just handle the offset only since that is all that matters.
-        $start = $query->offset + 1;
+        $start = ($query->unionOffset ?? $query->offset) + 1;
 
         $constraint = $this->compileRowConstraint($query);
 
-        $sql = $this->concatenate($components);
+        $sql = 'select '.$columns.' from ('.$sql.') as offset_table';
 
         // We are now ready to build the final SQL query so we'll create a common table
         // expression from the query and get the records with row numbers within our
@@ -149,10 +157,13 @@ class DB2Grammar extends Grammar
      */
     protected function compileRowConstraint($query)
     {
-        $start = $query->offset + 1;
+        $offset = $query->unionOffset ?? $query->offset;
+        $limit = $query->unionLimit ?? $query->limit;
 
-        if ($query->limit > 0) {
-            $finish = $query->offset + $query->limit;
+        $start = $offset + 1;
+
+        if ($limit > 0) {
+            $finish = $offset + $limit;
 
             return "between {$start} and {$finish}";
         }
@@ -171,6 +182,29 @@ class DB2Grammar extends Grammar
     protected function compileTableExpression($sql, $constraint)
     {
         return "select * from ({$sql}) as temp_table where row_num {$constraint}";
+    }
+
+    /**
+     * Compile the "union" queries attached to the main query.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @return string
+     */
+    protected function compileUnions(Builder $query)
+    {
+        if(!$query->unionOffset){
+            return parent::compileUnions($query);
+        }
+
+        $sql = '';
+
+        foreach ($query->unions as $union) {
+            $sql .= $this->compileUnion($union);
+        }
+
+        // do not compile unionOrders, unionLimit, or unionOffset as they will be covered by wrapWithOffset
+
+        return ltrim($sql);
     }
 
     /**
