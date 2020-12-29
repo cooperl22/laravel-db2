@@ -20,6 +20,12 @@ class DB2Grammar extends Grammar
     protected $dateFormat;
 
     /**
+     * Offset compatibility mode true triggers FETCH FIRST X ROWS and ROW_NUM behavior for older versions of DB2
+     * @var bool
+     */
+    protected $offsetCompatibilityMode = true;
+
+    /**
      * Wrap a single string in keyword identifiers.
      *
      * @param string $value
@@ -45,7 +51,10 @@ class DB2Grammar extends Grammar
      */
     protected function compileLimit(Builder $query, $limit)
     {
-        return "FETCH FIRST $limit ROWS ONLY";
+        if($this->offsetCompatibilityMode){
+            return "FETCH FIRST $limit ROWS ONLY";
+        }
+        return parent::compileLimit($query, $limit);
     }
 
     /**
@@ -57,6 +66,10 @@ class DB2Grammar extends Grammar
      */
     public function compileSelect(Builder $query)
     {
+        if(!$this->offsetCompatibilityMode){
+            return parent::compileSelect($query);
+        }
+
         if (is_null($query->columns)) {
             $query->columns = ['*'];
         }
@@ -183,7 +196,10 @@ class DB2Grammar extends Grammar
      */
     protected function compileOffset(Builder $query, $offset)
     {
-        return '';
+        if($this->offsetCompatibilityMode){
+            return '';
+        }
+        return parent::compileOffset($query, $offset);
     }
 
     /**
@@ -219,6 +235,16 @@ class DB2Grammar extends Grammar
     public function setDateFormat($dateFormat)
     {
         $this->dateFormat = $dateFormat;
+    }
+
+    /**
+     * Set offset compatibility mode to trigger FETCH FIRST X ROWS and ROW_NUM behavior for older versions of DB2
+     *
+     * @param $bool
+     */
+    public function setOffsetCompatibilityMode($bool)
+    {
+        $this->offsetCompatibilityMode = $bool;
     }
 
     /**
