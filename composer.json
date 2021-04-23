@@ -16,20 +16,20 @@
     }
     ],
     "require": {
-        "php": "^7.2.5",
-        "illuminate/database": "^7.0"
+        "php": "^7.3",
+        "illuminate/database": "^8.0"
     },
     "require-dev": {
     },
     "autoload": {
     "psr-4": {
-        "Cooperl\\Database\\DB2\\": "src/"
+        "Cooperl\\DB2\\": "src/"
     }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Cooperl\\Database\\DB2\\DB2ServiceProvider"
+                "Cooperl\\DB2\\DB2ServiceProvider"
             ]
         }
     }

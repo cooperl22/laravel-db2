@@ -142,13 +142,13 @@ return [
             ],
             'options' => [
                 PDO::ATTR_CASE => PDO::CASE_LOWER,
-                PDO::ATTR_PERSISTENT => false,
-                PDO::I5_ATTR_DBC_SYS_NAMING => false,
-                PDO::I5_ATTR_COMMIT => PDO::I5_TXN_NO_COMMIT,
-                PDO::I5_ATTR_JOB_SORT => false,
-                PDO::I5_ATTR_DBC_LIBL => '',
-                PDO::I5_ATTR_DBC_CURLIB => '',
-            ],
+                PDO::ATTR_PERSISTENT => false
+            ]
+            + (defined('PDO::I5_ATTR_DBC_SYS_NAMING') ? [PDO::I5_ATTI5_ATTR_DBC_SYS_NAMINGR_COMMIT => false] : [])
+            + (defined('PDO::I5_ATTR_COMMIT') ? [PDO::I5_ATTR_COMMIT => PDO::I5_TXN_NO_COMMIT] : [])
+            + (defined('PDO::I5_ATTR_JOB_SORT') ? [PDO::I5_ATTR_JOB_SORT => false] : [])
+            + (defined('PDO::I5_ATTR_DBC_LIBL') ? [PDO::I5_ATTR_DBC_LIBL => ''] : [])
+            + (defined('PDO::I5_ATTR_DBC_CURLIB') ? [PDO::I5_ATTR_DBC_CURLIB => ''] : [])
         ],
 
     ],

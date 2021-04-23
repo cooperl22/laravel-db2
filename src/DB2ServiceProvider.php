@@ -1,18 +1,21 @@
 <?php
 
-namespace Cooperl\Database\DB2;
+namespace Cooperl\DB2;
 
 use Illuminate\Foundation\Application as LaravelApplication;
 use Laravel\Lumen\Application as LumenApplication;
-use Cooperl\Database\DB2\Connectors\ODBCConnector;
-use Cooperl\Database\DB2\Connectors\IBMConnector;
-use Cooperl\Database\DB2\Connectors\ODBCZOSConnector;
+use Cooperl\DB2\Database\DB2Connection;
+use Cooperl\DB2\Database\Connectors\ODBCConnector;
+use Cooperl\DB2\Database\Connectors\IBMConnector;
+use Cooperl\DB2\Database\Connectors\ODBCZOSConnector;
+use Cooperl\DB2\Queue\DB2Connector;
+use Illuminate\Queue\QueueManager;
 use Illuminate\Support\ServiceProvider;
 
 /**
  * Class DB2ServiceProvider
  *
- * @package Cooperl\Database\DB2
+ * @package Cooperl\DB2\Database
  */
 class DB2ServiceProvider extends ServiceProvider
 {
@@ -84,6 +87,17 @@ class DB2ServiceProvider extends ServiceProvider
                 return new DB2Connection($db2Connection, $config["database"], $config["prefix"], $config);
             });
         }
+
+        $this->app->extend(
+            'queue',
+            function (QueueManager $queueManager) {
+                $queueManager->addConnector('db2_odbc', function () {
+                    return new DB2Connector($this->app['db']);
+                });
+
+                return $queueManager;
+            }
+        );
     }
 
     /**
