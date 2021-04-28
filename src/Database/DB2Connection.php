@@ -130,10 +130,10 @@ class DB2Connection extends Connection
         return $defaultGrammar;
     }
 
-   /**
+    /**
      * Get the default post processor instance.
      *
-     * @return \Cooperl\Database\DB2\Query\Processors\DB2Processor|\Cooperl\Database\DB2\Query\Processors\DB2ZOSProcessor
+     * @return \Cooperl\DB2\Database\Query\Processors\DB2Processor|\Cooperl\DB2\Database\Query\Processors\DB2ZOSProcessor
      */
     protected function getDefaultPostProcessor()
     {
