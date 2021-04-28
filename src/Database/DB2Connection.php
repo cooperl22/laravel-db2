@@ -130,20 +130,19 @@ class DB2Connection extends Connection
         return $defaultGrammar;
     }
 
-    /**
+   /**
      * Get the default post processor instance.
      *
-     * @return \Cooperl\DB2\Database\Query\Processors\DB2Processor|\Cooperl\DB2\Database\Query\Processors\DB2ZOSProcessor
+     * @return \Cooperl\Database\DB2\Query\Processors\DB2Processor|\Cooperl\Database\DB2\Query\Processors\DB2ZOSProcessor
      */
     protected function getDefaultPostProcessor()
     {
-        switch ($this->config['driver']) {
-            case 'db2_zos_odbc':
-                $defaultProcessor = new DB2ZOSProcessor;
-                break;
-            default:
-                $defaultProcessor = new DB2Processor;
-                break;
+        if (!empty(($this->config['processor']))) {
+            $defaultProcessor = new $this->config['processor'];
+        } elseif ($this->config['driver'] === 'db2_zos_odbc') {
+            $defaultProcessor = new DB2ZOSProcessor;
+        } else {
+            $defaultProcessor = new DB2Processor;
         }
 
         return $defaultProcessor;
