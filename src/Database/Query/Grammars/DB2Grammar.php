@@ -283,7 +283,7 @@ class DB2Grammar extends Grammar
 
     /**
      * Parameterize Upsert. Values need to be casted
-     * Form VARCHAR it is almost always posible to cast back to another type. See table (Table 1. Supported Casts between Built-in Data Types) https://www.ibm.com/support/producthub/db2/docs/content/SSEPGG_11.5.0/com.ibm.db2.luw.sql.ref.doc/doc/r0008478.html
+     * From VARCHAR it is almost always posible to cast back to another type. See table (Table 1. Supported Casts between Built-in Data Types) https://www.ibm.com/support/producthub/db2/docs/content/SSEPGG_11.5.0/com.ibm.db2.luw.sql.ref.doc/doc/r0008478.html
      *
      * @param   array $values
      *
