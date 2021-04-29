@@ -292,7 +292,7 @@ class DB2Grammar extends Grammar
     private function parameterizeUpsert($record)
     {
         return collect($record)->map(function ($value, $key) {
-            return 'CAST(' . $this->parameter($value) . ' as VARCHAR(' . strlen((string) $value) . '))';
+            return 'CAST(' . $this->parameter($value) . ' as VARCHAR(' . mb_strlen((string) $value) . '))';
         })->implode(', ');
     }
 }
