@@ -108,6 +108,10 @@ class DB2Connection extends Connection
             $defaultGrammar->setDateFormat($this->config['date_format']);
         }
 
+        if (array_key_exists('offset_compatibility_mode', $this->config)) {
+            $defaultGrammar->setOffsetCompatibilityMode($this->config['offset_compatibility_mode']);
+        }
+
         return $this->withTablePrefix($defaultGrammar);
     }
 
