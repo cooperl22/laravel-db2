@@ -12,11 +12,10 @@ use Illuminate\Database\Schema\Blueprint;
  */
 class Builder extends \Illuminate\Database\Schema\Builder
 {
-
     /**
      * Determine if the given table exists.
      *
-     * @param  string $table
+     * @param string $table
      *
      * @return bool
      */
@@ -27,19 +26,22 @@ class Builder extends \Illuminate\Database\Schema\Builder
 
         if (count($schemaTable) > 1) {
             $schema = $schemaTable[0];
-            $table = $this->connection->getTablePrefix().$schemaTable[1];
+            $table = $this->connection->getTablePrefix() . $schemaTable[1];
         } else {
             $schema = $this->connection->getDefaultSchema();
-            $table = $this->connection->getTablePrefix().$table;
+            $table = $this->connection->getTablePrefix() . $table;
         }
 
-        return count($this->connection->select($sql, [$schema, $table])) > 0;
+        return count($this->connection->select($sql, [
+                $schema,
+                $table,
+            ])) > 0;
     }
 
     /**
      * Get the column listing for a given table.
      *
-     * @param  string $table
+     * @param string $table
      *
      * @return array
      */
@@ -47,10 +49,26 @@ class Builder extends \Illuminate\Database\Schema\Builder
     {
         $sql = $this->grammar->compileColumnExists();
         $database = $this->connection->getDatabaseName();
-        $table = $this->connection->getTablePrefix().$table;
-        $results = $this->connection->select($sql, [$database, $table]);
+        $table = $this->connection->getTablePrefix() . $table;
 
-        return $this->connection->getPostProcessor()->processColumnListing($results);
+        $tableExploded = explode('.', $table);
+
+        if (count($tableExploded) > 1) {
+            $database = $tableExploded[0];
+            $table = $tableExploded[1];
+        }
+
+        $results = $this->connection->select($sql, [
+            $database,
+            $table,
+        ]);
+
+        $res = $this->connection->getPostProcessor()
+                                ->processColumnListing($results);
+
+        return array_values(array_map(function($r) {
+            return $r->column_name;
+        }, $res));
     }
 
     /**
@@ -73,8 +91,8 @@ class Builder extends \Illuminate\Database\Schema\Builder
     /**
      * Create a new command set with a Closure.
      *
-     * @param  string $table
-     * @param  \Closure $callback
+     * @param string $table
+     * @param \Closure $callback
      *
      * @return \Cooperl\DB2\Database\Schema\Blueprint
      */
