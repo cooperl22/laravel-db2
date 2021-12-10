@@ -47,10 +47,26 @@ class Builder extends \Illuminate\Database\Schema\Builder
     {
         $sql = $this->grammar->compileColumnExists();
         $database = $this->connection->getDatabaseName();
-        $table = $this->connection->getTablePrefix().$table;
-        $results = $this->connection->select($sql, [$database, $table]);
+        $table = $this->connection->getTablePrefix() . $table;
 
-        return $this->connection->getPostProcessor()->processColumnListing($results);
+        $tableExploded = explode('.', $table);
+
+        if (count($tableExploded) > 1) {
+            $database = $tableExploded[0];
+            $table = $tableExploded[1];
+        }
+
+        $results = $this->connection->select($sql, [
+            $database,
+            $table,
+        ]);
+
+        $res = $this->connection->getPostProcessor()
+                                ->processColumnListing($results);
+
+        return array_values(array_map(function($r) {
+            return $r->column_name;
+        }, $res));
     }
 
     /**
