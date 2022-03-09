@@ -88,6 +88,9 @@ return [
             'schema' => 'default schema',
             'port' => 50000,
             'date_format' => 'Y-m-d H:i:s',
+            'processor' => null,
+            // Can be used to overwrite the default result processor. E.g. My\Custom\DB2Processor::class
+            // If you leave this empty the default processor wil be used. 
             'odbc_keywords' => [
                 'SIGNON' => 3,
                 'SSL' => 0,
