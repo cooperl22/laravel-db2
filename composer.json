@@ -10,21 +10,21 @@
     ],
     "license": "MIT",
     "authors": [
-    {
-        "name": "Maxime Rault",
-        "role": "Developer"
-    }
+        {
+            "name": "Maxime Rault",
+            "role": "Developer"
+        }
     ],
     "require": {
-        "php": "^7.2.5",
+        "php": "^7.2.5|^8.0",
         "illuminate/database": "^7.0"
     },
     "require-dev": {
     },
     "autoload": {
-    "psr-4": {
-        "Cooperl\\DB2\\": "src/"
-    }
+        "psr-4": {
+            "Cooperl\\DB2\\": "src/"
+        }
     },
     "extra": {
         "laravel": {
