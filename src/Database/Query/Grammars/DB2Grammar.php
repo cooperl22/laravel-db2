@@ -257,4 +257,68 @@ class DB2Grammar extends Grammar
     {
         return 'SAVEPOINT '.$name.' ON ROLLBACK RETAIN CURSORS';
     }
+
+    /**
+     * Compile an "upsert" statement into SQL.
+     *
+     * Based on and modified from :
+     *  - https://github.com/laravel/framework/blob/338ffa625e4b16ccd3d3481371c9312a245fdc30/src/Illuminate/Database/Query/Grammars/SqlServerGrammar.php
+     *  - https://nandaibmi.com/index.php/2019/04/16/db2-upsert-using-merge-into/
+     *
+     * @param  \Illuminate\Database\Query\Builder $query
+     * @param  array $values
+     * @param  array $uniqueBy
+     * @param  array $update
+     *
+     * @return  string
+     */
+    public function compileUpsert(Builder $query, array $values, array $uniqueBy, array $update)
+    {
+        $columns = $this->columnize(array_keys(reset($values)));
+        
+        $sql = 'merge into ' . $query->from . ' as temp ';
+        
+        $parameters  =  collect($values)->map(function ($record) {
+            return '(' . $this->parameterizeUpsert($record) . ')';
+        })->implode(', ');
+        
+        $sql .= 'using (values ' . $parameters . ') as merge (' . $columns . ') ';
+
+        $on = collect($uniqueBy)->map(function ($column) {
+            return 'temp.' . $column . ' = merge.' . $column;
+        })->implode(' and ');
+
+        $sql .= 'on ' . $on . ' ';
+
+        if ($update) {
+            $update = collect($update)->map(function ($value) {
+                return 'temp.' . $value . ' = ' . 'merge.' . $value;
+            })->implode(', ');
+
+            $sql .= 'when matched then update set ' . $update . ' ';
+        }
+
+        $mergeValues = collect(array_keys(reset($values)))->map(function ($column) {
+            return 'merge.' . $column;
+        })->implode(', ');
+
+        $sql .= 'when not matched then insert (' . $columns . ') values (' . $mergeValues . ')';
+
+        return $sql;
+    }
+
+    /**
+     * Parameterize Upsert. Values need to be casted
+     * From VARCHAR it is almost always posible to cast back to another type. See table (Table 1. Supported Casts between Built-in Data Types) https://www.ibm.com/support/producthub/db2/docs/content/SSEPGG_11.5.0/com.ibm.db2.luw.sql.ref.doc/doc/r0008478.html
+     *
+     * @param   array $values
+     *
+     * @return  string
+     */
+    private function parameterizeUpsert($record)
+    {
+        return collect($record)->map(function ($value, $key) {
+            return 'CAST(' . $this->parameter($value) . ' as VARCHAR(' . mb_strlen((string) $value) . '))';
+        })->implode(', ');
+    }
 }
