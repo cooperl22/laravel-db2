@@ -141,13 +141,12 @@ class DB2Connection extends Connection
      */
     protected function getDefaultPostProcessor()
     {
-        switch ($this->config['driver']) {
-            case 'db2_zos_odbc':
-                $defaultProcessor = new DB2ZOSProcessor;
-                break;
-            default:
-                $defaultProcessor = new DB2Processor;
-                break;
+        if (!empty(($this->config['processor']))) {
+            $defaultProcessor = new $this->config['processor'];
+        } elseif ($this->config['driver'] === 'db2_zos_odbc') {
+            $defaultProcessor = new DB2ZOSProcessor;
+        } else {
+            $defaultProcessor = new DB2Processor;
         }
 
         return $defaultProcessor;
