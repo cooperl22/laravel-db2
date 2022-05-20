@@ -17,7 +17,9 @@
     ],
     "require": {
         "php": "^7.3|^8.0",
-        "illuminate/database": "^8.0"
+        "illuminate/database": "^8.0",
+        "ext-pdo": "*",
+        "ext-iconv": "*"
     },
     "require-dev": {
     },

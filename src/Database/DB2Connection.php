@@ -141,14 +141,30 @@ class DB2Connection extends Connection
      */
     protected function getDefaultPostProcessor()
     {
-        if (!empty(($this->config['processor']))) {
-            $defaultProcessor = new $this->config['processor'];
-        } elseif ($this->config['driver'] === 'db2_zos_odbc') {
+        if ($this->config['driver'] === 'db2_zos_odbc') {
             $defaultProcessor = new DB2ZOSProcessor;
         } else {
             $defaultProcessor = new DB2Processor;
         }
 
         return $defaultProcessor;
+    }
+
+    /**
+     * Bind values to their parameters in the given statement.
+     *
+     * @param  \PDOStatement  $statement
+     * @param  array  $bindings
+     * @return void
+     */
+    public function bindValues($statement, $bindings)
+    {
+        foreach ($bindings as $key => $value) {
+            $statement->bindValue(
+                is_string($key) ? $key : $key + 1,
+                $this->config('from_encoding') ? iconv($this->config('from_encoding'), 'utf-8', $value) : $value,
+                is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
+            );
+        }
     }
 }

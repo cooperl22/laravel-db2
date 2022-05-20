@@ -51,4 +51,26 @@ class DB2Processor extends Processor
             return is_numeric($id) ? (int) $id : $id;
         }
     }
+
+    /**
+     * Process the results of a "select" query.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  array  $results
+     * @return array
+     */
+    public function processSelect(Builder $query, $results)
+    {
+        foreach ($results as $index=>$result)
+        {
+            $results[$index] = array_map(function ($el) {
+                if($this->config('from_encoding')) {
+                    return iconv($this->config('from_encoding'), 'utf-8', trim($el));
+                } else {
+                    return trim($el);
+                }
+            }, (array)$result);
+        }
+        return $results;
+    }
 }
