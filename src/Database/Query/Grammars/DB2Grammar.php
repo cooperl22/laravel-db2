@@ -1,6 +1,6 @@
 <?php
 
-namespace Cooperl\DB2\Database\Query\Grammars;
+namespace Easi\DB2\Database\Query\Grammars;
 
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Builder;
@@ -8,7 +8,7 @@ use Illuminate\Database\Query\Builder;
 /**
  * Class DB2Grammar
  *
- * @package Cooperl\DB2\Database\Query\Grammars
+ * @package Easi\DB2\Database\Query\Grammars
  */
 class DB2Grammar extends Grammar
 {

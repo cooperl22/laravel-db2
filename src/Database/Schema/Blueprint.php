@@ -1,6 +1,6 @@
 <?php
 
-namespace Cooperl\DB2\Database\Schema;
+namespace Easi\DB2\Database\Schema;
 
 use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Grammars\Grammar;
@@ -8,7 +8,7 @@ use Illuminate\Database\Schema\Grammars\Grammar;
 /**
  * Class Blueprint
  *
- * @package Cooperl\DB2\Database\Schema
+ * @package Easi\DB2\Database\Schema
  */
 class Blueprint extends \Illuminate\Database\Schema\Blueprint
 {

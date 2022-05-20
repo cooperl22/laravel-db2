@@ -1,5 +1,5 @@
 {
-    "name": "cooperl/laravel-db2",
+    "name": "easi-power/laravel-db2",
     "description": "laravel-db2 is a simple DB2 service provider for Laravel. It provides DB2 Connection by extending the Illuminate Database component of the laravel framework.",
     "keywords": [
         "laravel",
@@ -23,13 +23,13 @@
     },
     "autoload": {
     "psr-4": {
-        "Cooperl\\DB2\\": "src/"
+        "Easi\\DB2\\": "src/"
     }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Cooperl\\DB2\\DB2ServiceProvider"
+                "Easi\\DB2\\DB2ServiceProvider"
             ]
         }
     }

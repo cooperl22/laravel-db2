@@ -1,21 +1,21 @@
 <?php
 
-namespace Cooperl\DB2;
+namespace Easi\DB2;
 
 use Illuminate\Foundation\Application as LaravelApplication;
 use Laravel\Lumen\Application as LumenApplication;
-use Cooperl\DB2\Database\DB2Connection;
-use Cooperl\DB2\Database\Connectors\ODBCConnector;
-use Cooperl\DB2\Database\Connectors\IBMConnector;
-use Cooperl\DB2\Database\Connectors\ODBCZOSConnector;
-use Cooperl\DB2\Queue\DB2Connector;
+use Easi\DB2\Database\DB2Connection;
+use Easi\DB2\Database\Connectors\ODBCConnector;
+use Easi\DB2\Database\Connectors\IBMConnector;
+use Easi\DB2\Database\Connectors\ODBCZOSConnector;
+use Easi\DB2\Queue\DB2Connector;
 use Illuminate\Queue\QueueManager;
 use Illuminate\Support\ServiceProvider;
 
 /**
  * Class DB2ServiceProvider
  *
- * @package Cooperl\DB2\Database
+ * @package Easi\DB2\Database
  */
 class DB2ServiceProvider extends ServiceProvider
 {

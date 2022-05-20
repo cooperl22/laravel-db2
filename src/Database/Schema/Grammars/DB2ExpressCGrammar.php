@@ -1,6 +1,6 @@
 <?php
 
-namespace Cooperl\DB2\Database\Schema\Grammars;
+namespace Easi\DB2\Database\Schema\Grammars;
 
 class DB2ExpressCGrammar extends DB2Grammar
 {

@@ -1,15 +1,15 @@
 <?php
 
-namespace Cooperl\DB2\Database\Query\Processors;
+namespace Easi\DB2\Database\Query\Processors;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\Processors\Processor;
-use Cooperl\DB2\Database\Query\Grammars\DB2Grammar;
+use Easi\DB2\Database\Query\Grammars\DB2Grammar;
 
 /**
  * Class DB2Processor
  *
- * @package Cooperl\DB2\Database\Query\Processors
+ * @package Easi\DB2\Database\Query\Processors
  */
 class DB2Processor extends Processor
 {
