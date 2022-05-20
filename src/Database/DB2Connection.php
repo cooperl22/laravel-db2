@@ -144,7 +144,7 @@ class DB2Connection extends Connection
         if ($this->config['driver'] === 'db2_zos_odbc') {
             $defaultProcessor = new DB2ZOSProcessor;
         } else {
-            $defaultProcessor = new DB2Processor;
+            $defaultProcessor = new DB2Processor($this->config);
         }
 
         return $defaultProcessor;

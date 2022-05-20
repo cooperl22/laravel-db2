@@ -13,6 +13,13 @@ use Easi\DB2\Database\Query\Grammars\DB2Grammar;
  */
 class DB2Processor extends Processor
 {
+    protected $config;
+
+    public function __construct(array $config = [])
+    {
+        $this->config = $config;
+    }
+
     /**
      * Process an "insert get ID" query.
      *
