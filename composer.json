@@ -13,6 +13,10 @@
     {
         "name": "Maxime Rault",
         "role": "Developer"
+    },
+    {
+        "name": "Mario Aquino",
+        "role": "Developer"
     }
     ],
     "require": {
