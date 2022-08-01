@@ -4,6 +4,7 @@ namespace Easi\DB2\Database\Query\Grammars;
 
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DB2Grammar
@@ -256,5 +257,61 @@ class DB2Grammar extends Grammar
     public function compileSavepoint($name)
     {
         return 'SAVEPOINT '.$name.' ON ROLLBACK RETAIN CURSORS';
+    }
+
+    /**
+     * Compile an "upsert" statement into SQL.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  array  $values
+     * @param  array  $uniqueBy
+     * @param  array  $update
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    public function compileUpsert(Builder $query, array $values, array $uniqueBy, array $update)
+    {
+        $table = $this->wrapTable($query->from);
+/*        Log::info($table);
+        Log::info($values);
+        Log::info($uniqueBy);
+        Log::info($update);*/
+        Log::info($values);
+/*        $valueString = collect($values[0])->map(function($value, $key) {
+            return (string)$value;
+        })->implode(',');
+        Log::info($valueString);*/
+        $valueString = $this->parameterize($values[0]);
+
+        // Start statement
+        $sql = "MERGE INTO $table as t USING (VALUES($valueString)) as x".PHP_EOL;
+
+        // Unique key constraint
+        foreach ($uniqueBy as $index => $uniqueCol)
+        {
+            if($index === 0) {
+                $sql .= "ON t.$uniqueCol = x.$uniqueCol ";
+            } else {
+                $sql .= "AND t.$uniqueCol = x.$uniqueCol ";
+            }
+        }
+        $sql .= PHP_EOL;
+
+        // When no match => INSERT
+        $insert = $this->compileInsert($query, $values);
+        $insert = str_replace("into $table ", "", $insert);
+        $sql .= "WHEN NOT MATCHED THEN " .$insert.PHP_EOL;
+
+        // When matched => update
+        $sql .= "WHEN MATCHED THEN UPDATE SET".PHP_EOL;
+        foreach ($update as $col)
+        {
+            $sql .= "t.$col = x.$col,".PHP_EOL;
+        }
+        $sql = substr($sql, 0, -3);
+        Log::info($sql);
+
+        return $sql;
     }
 }
