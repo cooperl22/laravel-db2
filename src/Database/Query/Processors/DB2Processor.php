@@ -71,10 +71,11 @@ class DB2Processor extends Processor
         foreach ($results as $index=>$result)
         {
             $results[$index] = array_map(function ($el) {
+                $el = is_string($el) ? trim($el) : $el;
                 if(isset($this->config['from_encoding'])) {
-                    return iconv($this->config['from_encoding'], 'utf-8', trim($el));
+                    return iconv($this->config['from_encoding'], 'utf-8', $el);
                 } else {
-                    return trim($el);
+                    return $el;
                 }
             }, (array)$result);
         }
