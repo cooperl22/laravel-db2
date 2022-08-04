@@ -277,15 +277,17 @@ class DB2Grammar extends Grammar
         Log::info($values);
         Log::info($uniqueBy);
         Log::info($update);*/
-        Log::info($values);
+        //Log::info($values);
 /*        $valueString = collect($values[0])->map(function($value, $key) {
             return (string)$value;
         })->implode(',');
         Log::info($valueString);*/
         $valueString = $this->parameterize($values[0]);
+        $keys = collect($values[0])->keys();
+        $keysString = "(".$keys->implode(", ").")";
 
         // Start statement
-        $sql = "MERGE INTO $table as t USING (VALUES($valueString)) as x".PHP_EOL;
+        $sql = "MERGE INTO $table as t USING (VALUES($valueString)) as x $keysString".PHP_EOL;
 
         // Unique key constraint
         foreach ($uniqueBy as $index => $uniqueCol)
@@ -299,9 +301,11 @@ class DB2Grammar extends Grammar
         $sql .= PHP_EOL;
 
         // When no match => INSERT
-        $insert = $this->compileInsert($query, $values);
-        $insert = str_replace("into $table ", "", $insert);
-        $sql .= "WHEN NOT MATCHED THEN " .$insert.PHP_EOL;
+        $values = "VALUES (".$keys->map(function($key) {
+            return "x.$key";
+        })->implode(', ').")";
+
+        $sql .= "WHEN NOT MATCHED THEN INSERT $keysString $values".PHP_EOL;
 
         // When matched => update
         $sql .= "WHEN MATCHED THEN UPDATE SET".PHP_EOL;
@@ -310,7 +314,7 @@ class DB2Grammar extends Grammar
             $sql .= "t.$col = x.$col,".PHP_EOL;
         }
         $sql = substr($sql, 0, -3);
-        Log::info($sql);
+        //Log::info($sql);
 
         return $sql;
     }
