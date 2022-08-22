@@ -273,16 +273,8 @@ class DB2Grammar extends Grammar
     public function compileUpsert(Builder $query, array $values, array $uniqueBy, array $update)
     {
         $table = $this->wrapTable($query->from);
-/*        Log::info($table);
-        Log::info($values);
-        Log::info($uniqueBy);
-        Log::info($update);*/
-        //Log::info($values);
-/*        $valueString = collect($values[0])->map(function($value, $key) {
-            return (string)$value;
-        })->implode(',');
-        Log::info($valueString);*/
-        $valueString = $this->parameterize($values[0]);
+
+        $valueString = $this->parameterizeWithTypes($values[0]);
         $keys = collect($values[0])->keys();
         $keysString = "(".$keys->implode(", ").")";
 
@@ -314,8 +306,37 @@ class DB2Grammar extends Grammar
             $sql .= "t.$col = x.$col,".PHP_EOL;
         }
         $sql = substr($sql, 0, -3);
-        //Log::info($sql);
 
         return $sql;
+    }
+
+    /**
+     * Create query parameter place-holders for an array.
+     *
+     * @param  array  $values
+     * @return string
+     */
+    public function parameterizeWithTypes(array $values)
+    {
+        return implode(', ', array_map([$this, 'parameterWithType'], $values));
+    }
+
+    /**
+     * Get the appropriate query parameter place-holder for a value.
+     *
+     * @param  mixed  $value
+     * @return string
+     */
+    public function parameterWithType($value)
+    {
+        if($this->isExpression($value)) {
+            return $this->getValue($value);
+        } else {
+            if(is_int($value)) {
+                return 'cast(? as INT)';
+            } else {
+                return 'cast(? as CLOB)';
+            }
+        }
     }
 }
