@@ -4,6 +4,7 @@ namespace Easi\DB2\Database\Query\Grammars;
 
 use Illuminate\Database\Query\Grammars\Grammar;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DB2Grammar
@@ -256,5 +257,86 @@ class DB2Grammar extends Grammar
     public function compileSavepoint($name)
     {
         return 'SAVEPOINT '.$name.' ON ROLLBACK RETAIN CURSORS';
+    }
+
+    /**
+     * Compile an "upsert" statement into SQL.
+     *
+     * @param  \Illuminate\Database\Query\Builder  $query
+     * @param  array  $values
+     * @param  array  $uniqueBy
+     * @param  array  $update
+     * @return string
+     *
+     * @throws \RuntimeException
+     */
+    public function compileUpsert(Builder $query, array $values, array $uniqueBy, array $update)
+    {
+        $table = $this->wrapTable($query->from);
+
+        $valueString = $this->parameterizeWithTypes($values[0]);
+        $keys = collect($values[0])->keys();
+        $keysString = "(".$keys->implode(", ").")";
+
+        // Start statement
+        $sql = "MERGE INTO $table as t USING (VALUES($valueString)) as x $keysString".PHP_EOL;
+
+        // Unique key constraint
+        foreach ($uniqueBy as $index => $uniqueCol)
+        {
+            if($index === 0) {
+                $sql .= "ON t.$uniqueCol = x.$uniqueCol ";
+            } else {
+                $sql .= "AND t.$uniqueCol = x.$uniqueCol ";
+            }
+        }
+        $sql .= PHP_EOL;
+
+        // When no match => INSERT
+        $values = "VALUES (".$keys->map(function($key) {
+            return "x.$key";
+        })->implode(', ').")";
+
+        $sql .= "WHEN NOT MATCHED THEN INSERT $keysString $values".PHP_EOL;
+
+        // When matched => update
+        $sql .= "WHEN MATCHED THEN UPDATE SET".PHP_EOL;
+        foreach ($update as $col)
+        {
+            $sql .= "t.$col = x.$col,".PHP_EOL;
+        }
+        $sql = substr($sql, 0, -3);
+
+        return $sql;
+    }
+
+    /**
+     * Create query parameter place-holders for an array.
+     *
+     * @param  array  $values
+     * @return string
+     */
+    public function parameterizeWithTypes(array $values)
+    {
+        return implode(', ', array_map([$this, 'parameterWithType'], $values));
+    }
+
+    /**
+     * Get the appropriate query parameter place-holder for a value.
+     *
+     * @param  mixed  $value
+     * @return string
+     */
+    public function parameterWithType($value)
+    {
+        if($this->isExpression($value)) {
+            return $this->getValue($value);
+        } else {
+            if(is_int($value)) {
+                return 'cast(? as INT)';
+            } else {
+                return 'cast(? as CLOB)';
+            }
+        }
     }
 }
