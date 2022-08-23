@@ -274,12 +274,20 @@ class DB2Grammar extends Grammar
     {
         $table = $this->wrapTable($query->from);
 
-        $valueString = $this->parameterizeWithTypes($values[0]);
+        $valuesString = 'VALUES';
         $keys = collect($values[0])->keys();
         $keysString = "(".$keys->implode(", ").")";
+        foreach ($values as $value)
+        {
+            $valueString = $this->parameterizeWithTypes($value);
+            $valueString = "($valueString),".PHP_EOL;
+            $valuesString .= $valueString;
+        }
+        // Remove the trailing "," and newline
+        $valuesString = substr($valuesString, 0, -3);
 
         // Start statement
-        $sql = "MERGE INTO $table as t USING (VALUES($valueString)) as x $keysString".PHP_EOL;
+        $sql = "MERGE INTO $table as t USING ($valuesString) as x $keysString".PHP_EOL;
 
         // Unique key constraint
         foreach ($uniqueBy as $index => $uniqueCol)
@@ -297,7 +305,7 @@ class DB2Grammar extends Grammar
             return "x.$key";
         })->implode(', ').")";
 
-        $sql .= "WHEN NOT MATCHED THEN INSERT $keysString $values".PHP_EOL;
+        //$sql .= "WHEN NOT MATCHED THEN INSERT $keysString $values".PHP_EOL;
 
         // When matched => update
         $sql .= "WHEN MATCHED THEN UPDATE SET".PHP_EOL;
@@ -306,7 +314,6 @@ class DB2Grammar extends Grammar
             $sql .= "t.$col = x.$col,".PHP_EOL;
         }
         $sql = substr($sql, 0, -3);
-
         return $sql;
     }
 
