@@ -160,8 +160,6 @@ class DB2Connection extends Connection
      */
     public function bindValues($statement, $bindings)
     {
-        //Log::warning($statement);
-        Log::warning($bindings);
         foreach ($bindings as $key => $value) {
             $statement->bindValue(
                 is_string($key) ? $key : $key + 1,
