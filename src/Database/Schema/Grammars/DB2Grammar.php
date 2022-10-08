@@ -910,4 +910,15 @@ EOT;
         return $this->compileExecuteCommand($blueprint, $command);
     }
 
+    /**
+     * Compile the SQL needed to retrieve all table names.
+     *
+     * @return string
+     */
+    public function compileGetAllTables()
+    {
+        return 'select trim(table_schema) || \'.\' || trim(table_name)
+                from information_schema.tables
+                where table_schema = upper(?) and table_type = \'BASE TABLE\'';
+    }
 }
