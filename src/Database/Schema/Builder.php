@@ -104,4 +104,37 @@ class Builder extends \Illuminate\Database\Schema\Builder
 
         return new \Easi\DB2\Database\Schema\Blueprint($table, $callback);
     }
+
+    /**
+     * Get all of the table names for the database.
+     *
+     * @return array
+     */
+    public function getAllTables()
+    {
+        $list = $this->connection->select(
+            $this->grammar->compileGetAllTables(),
+            [$this->connection->getDefaultSchema()]
+        );
+        return array_map(function($tableObject) {
+            $tableObject = (array)$tableObject;
+            return $tableObject['00001'];
+        }, $list);
+    }
+
+    /**
+     * Drop all tables from the database.
+     *
+     * @return void
+     *
+     * @throws \LogicException
+     */
+    public function dropAllTables()
+    {
+        $tables = $this->getAllTables();
+        foreach ($tables as $table)
+        {
+            $this->drop($table);
+        }
+    }
 }
