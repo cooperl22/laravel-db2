@@ -305,7 +305,7 @@ class DB2Grammar extends Grammar
             return "x.$key";
         })->implode(', ').")";
 
-        //$sql .= "WHEN NOT MATCHED THEN INSERT $keysString $values".PHP_EOL;
+        $sql .= "WHEN NOT MATCHED THEN INSERT $keysString $values".PHP_EOL;
 
         // When matched => update
         $sql .= "WHEN MATCHED THEN UPDATE SET".PHP_EOL;
