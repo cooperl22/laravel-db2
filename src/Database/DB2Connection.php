@@ -163,7 +163,7 @@ class DB2Connection extends Connection
         foreach ($bindings as $key => $value) {
             $statement->bindValue(
                 is_string($key) ? $key : $key + 1,
-                isset($this->config['from_encoding']) && $this->config['from_encoding'] ?
+                isset($this->config['from_encoding']) && $this->config['from_encoding'] && !is_null($value) ?
                     iconv('utf-8', $this->config['from_encoding'], $value)
                     : $value,
                 is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
