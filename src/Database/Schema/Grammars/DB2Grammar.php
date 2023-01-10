@@ -457,6 +457,18 @@ class DB2Grammar extends Grammar
     }
 
     /**
+     * Create the column definition for a tiny text type.
+     *
+     * @param  \Illuminate\Support\Fluent  $column
+     * @return string
+     */
+    protected function typeTinyText(Fluent $column)
+    {
+        $colLength = ($column->length ? $column->length : 255);
+        return "varchar($colLength)";
+    }
+
+    /**
      * Create the column definition for a text type.
      *
      * @param  \Illuminate\Support\Fluent $column
@@ -479,7 +491,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeMediumText(Fluent $column)
     {
-        $colLength = ($column->length ? $column->length : 16000);
+        $colLength = ($column->length ? $column->length : 10000);
 
         return "varchar($colLength)";
     }
@@ -493,9 +505,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeLongText(Fluent $column)
     {
-        $colLength = ($column->length ? $column->length : 16000);
-
-        return "varchar($colLength)";
+        return "clob";
     }
 
     /**
@@ -523,6 +533,17 @@ class DB2Grammar extends Grammar
     }
 
     /**
+     * Create the column definition for a medium integer type.
+     *
+     * @param  \Illuminate\Support\Fluent  $column
+     * @return string
+     */
+    protected function typeMediumInteger(Fluent $column)
+    {
+        return 'int';
+    }
+
+    /**
      * Create the column definition for a small integer type.
      *
      * @param  \Illuminate\Support\Fluent $column
@@ -530,6 +551,17 @@ class DB2Grammar extends Grammar
      * @return string
      */
     protected function typeSmallInteger(Fluent $column)
+    {
+        return 'smallint';
+    }
+
+    /**
+     * Create the column definition for a tiny integer type.
+     *
+     * @param  \Illuminate\Support\Fluent  $column
+     * @return string
+     */
+    protected function typeTinyInteger(Fluent $column)
     {
         return 'smallint';
     }
@@ -680,6 +712,28 @@ class DB2Grammar extends Grammar
      * @return string
      */
     protected function typeBinary(Fluent $column)
+    {
+        return 'blob';
+    }
+
+    /**
+     * Create the column definition for a json type.
+     *
+     * @param  \Illuminate\Support\Fluent  $column
+     * @return string
+     */
+    protected function typeJson(Fluent $column)
+    {
+        return 'clob';
+    }
+
+    /**
+     * Create the column definition for a jsonb type.
+     *
+     * @param  \Illuminate\Support\Fluent  $column
+     * @return string
+     */
+    protected function typeJsonb(Fluent $column)
     {
         return 'blob';
     }
