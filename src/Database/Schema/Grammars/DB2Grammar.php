@@ -505,7 +505,7 @@ class DB2Grammar extends Grammar
      */
     protected function typeLongText(Fluent $column)
     {
-        return "CLOB";
+        return "clob";
     }
 
     /**
@@ -712,6 +712,28 @@ class DB2Grammar extends Grammar
      * @return string
      */
     protected function typeBinary(Fluent $column)
+    {
+        return 'blob';
+    }
+
+    /**
+     * Create the column definition for a json type.
+     *
+     * @param  \Illuminate\Support\Fluent  $column
+     * @return string
+     */
+    protected function typeJson(Fluent $column)
+    {
+        return 'clob';
+    }
+
+    /**
+     * Create the column definition for a jsonb type.
+     *
+     * @param  \Illuminate\Support\Fluent  $column
+     * @return string
+     */
+    protected function typeJsonb(Fluent $column)
     {
         return 'blob';
     }
