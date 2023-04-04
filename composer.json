@@ -21,7 +21,7 @@
     ],
     "require": {
         "php": "^8.0",
-        "illuminate/database": "^9.34",
+        "illuminate/database": "v10.5.1",
         "ext-pdo": "*",
         "ext-iconv": "*"
     },
