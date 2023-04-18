@@ -17,6 +17,10 @@
     {
         "name": "Mario Aquino",
         "role": "Developer"
+    },
+    {
+        "name": "Levi Vanheel",
+        "role": "Developer"
     }
     ],
     "require": {
