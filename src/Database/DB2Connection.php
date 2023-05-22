@@ -2,6 +2,8 @@
 
 namespace Easi\DB2\Database;
 
+use Easi\DB2\Exceptions\TranslatedQueryException;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\Log;
 use PDO;
 
@@ -169,5 +171,11 @@ class DB2Connection extends Connection
                 is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR
             );
         }
+    }
+
+    protected function handleQueryException(QueryException $e, $query, $bindings, \Closure $callback)
+    {
+        $e = new TranslatedQueryException($e->getConnectionName(), $e->getSql(), $e->getBindings(), $e, $this->config);
+        return parent::handleQueryException($e, $query, $bindings, $callback);
     }
 }
